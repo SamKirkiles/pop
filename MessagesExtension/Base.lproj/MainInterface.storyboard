@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11156"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -107,36 +108,79 @@
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="10" translatesAutoresizingMaskIntoConstraints="NO" id="1ha-8C-Oc8">
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5vp-Y7-M19" customClass="ContentView" customModule="MessagesExtension" customModuleProvider="target">
-                                        <color key="backgroundColor" red="0.57254904510000004" green="0.0" blue="0.23137255009999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gbt-B1-nbU">
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WBF-jb-vLy" customClass="ContentView" customModule="MessagesExtension" customModuleProvider="target">
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="WBF-jb-vLy" firstAttribute="centerX" secondItem="gbt-B1-nbU" secondAttribute="centerX" id="Fcf-Q7-jeX"/>
+                                            <constraint firstItem="WBF-jb-vLy" firstAttribute="top" secondItem="gbt-B1-nbU" secondAttribute="top" id="PvJ-wf-ZfT"/>
+                                            <constraint firstItem="WBF-jb-vLy" firstAttribute="centerY" secondItem="gbt-B1-nbU" secondAttribute="centerY" id="X1l-un-o9C"/>
+                                            <constraint firstAttribute="trailing" secondItem="WBF-jb-vLy" secondAttribute="trailing" id="c8V-w2-Joo"/>
+                                            <constraint firstAttribute="bottom" secondItem="WBF-jb-vLy" secondAttribute="bottom" id="gAd-mo-Q5q"/>
+                                            <constraint firstItem="WBF-jb-vLy" firstAttribute="leading" secondItem="gbt-B1-nbU" secondAttribute="leading" id="woC-lD-Hk5"/>
+                                        </constraints>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="5vp-Y7-M19" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="top" id="Peb-ja-qal"/>
-                                    <constraint firstItem="5vp-Y7-M19" firstAttribute="centerY" secondItem="1ha-8C-Oc8" secondAttribute="centerY" id="kBz-Lb-4wX"/>
-                                    <constraint firstItem="5vp-Y7-M19" firstAttribute="centerX" secondItem="1ha-8C-Oc8" secondAttribute="centerX" id="nm6-0b-fEs"/>
-                                    <constraint firstItem="5vp-Y7-M19" firstAttribute="leading" secondItem="1ha-8C-Oc8" secondAttribute="leading" id="rpL-XW-fk2"/>
-                                    <constraint firstAttribute="bottom" secondItem="5vp-Y7-M19" secondAttribute="bottom" id="s6p-Ih-klD"/>
-                                    <constraint firstAttribute="trailing" secondItem="5vp-Y7-M19" secondAttribute="trailing" id="xtC-G2-gQr"/>
+                                    <constraint firstItem="gbt-B1-nbU" firstAttribute="centerY" secondItem="1ha-8C-Oc8" secondAttribute="centerY" id="GTN-VM-bOI"/>
+                                    <constraint firstItem="gbt-B1-nbU" firstAttribute="centerX" secondItem="1ha-8C-Oc8" secondAttribute="centerX" id="Wgh-l6-dnf"/>
+                                    <constraint firstAttribute="bottom" secondItem="gbt-B1-nbU" secondAttribute="bottom" id="df5-tj-nzm"/>
+                                    <constraint firstItem="gbt-B1-nbU" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="top" id="mSS-el-Fsr"/>
+                                    <constraint firstAttribute="trailing" secondItem="gbt-B1-nbU" secondAttribute="trailing" id="vsu-KH-Pec"/>
+                                    <constraint firstItem="gbt-B1-nbU" firstAttribute="leading" secondItem="1ha-8C-Oc8" secondAttribute="leading" id="xrD-61-twE"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="delegate" destination="pUK-h9-skb" id="9Rj-lV-rvt"/>
                                 </connections>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iZt-sJ-HM3">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="4hY-tx-sn3"/>
+                                    <constraint firstAttribute="height" constant="30" id="ozb-gu-qct"/>
+                                </constraints>
+                                <state key="normal" image="close"/>
+                                <connections>
+                                    <action selector="closePressed:" destination="pUK-h9-skb" eventType="touchUpInside" id="qV6-0p-oyA"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Prn-X3-x6h">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="Mie-0q-R0K"/>
+                                    <constraint firstAttribute="height" constant="30" id="ZK0-1z-mcY"/>
+                                </constraints>
+                                <state key="normal" image="send"/>
+                                <connections>
+                                    <action selector="sendPressed:" destination="pUK-h9-skb" eventType="touchUpInside" id="yCV-yj-ceV"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="5Ej-Kt-qmU"/>
+                            <constraint firstItem="Prn-X3-x6h" firstAttribute="top" secondItem="1kZ-cr-icb" secondAttribute="bottom" id="5P4-4L-Uk0"/>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leading" id="DXu-Xu-mEy"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Prn-X3-x6h" secondAttribute="trailing" id="GV4-0G-Ivf"/>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" id="Gvq-pk-2R5"/>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="centerY" secondItem="rO7-at-i6K" secondAttribute="centerY" id="Hrl-RN-w27"/>
+                            <constraint firstItem="iZt-sJ-HM3" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leadingMargin" id="K5S-8c-OAW"/>
                             <constraint firstAttribute="trailing" secondItem="1ha-8C-Oc8" secondAttribute="trailing" id="aqy-nl-vjF"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="bottom" id="b4g-ry-DTQ"/>
+                            <constraint firstItem="iZt-sJ-HM3" firstAttribute="top" secondItem="1kZ-cr-icb" secondAttribute="bottom" id="yt9-qP-rPn"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="contentView" destination="5vp-Y7-M19" id="Qkd-ED-Wjd"/>
+                        <outlet property="closeButtonTopConstraint" destination="yt9-qP-rPn" id="1ol-rT-JPi"/>
+                        <outlet property="contentView" destination="WBF-jb-vLy" id="l2x-g9-Qyq"/>
+                        <outlet property="contentViewBottomConstraint" destination="gAd-mo-Q5q" id="qWN-CW-kNx"/>
+                        <outlet property="contentViewLeftConstraint" destination="woC-lD-Hk5" id="wZ7-Ec-yCs"/>
+                        <outlet property="contentViewRightConstraint" destination="c8V-w2-Joo" id="TBr-Fz-evm"/>
+                        <outlet property="contentViewTopConstraint" destination="PvJ-wf-ZfT" id="V41-DI-xWu"/>
                         <outlet property="scrollView" destination="1ha-8C-Oc8" id="PVq-wu-QtO"/>
+                        <outlet property="scrollViewBase" destination="gbt-B1-nbU" id="SPr-7X-QXG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3DY-U4-wl6" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -146,5 +190,7 @@
     </scenes>
     <resources>
         <image name="camera" width="400" height="400"/>
+        <image name="close" width="200" height="200"/>
+        <image name="send" width="200" height="200"/>
     </resources>
 </document>

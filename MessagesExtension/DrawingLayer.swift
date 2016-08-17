@@ -8,19 +8,41 @@
 
 import UIKit
 
-class DrawingLayer: CALayer {
+class DrawingLayer: CALayer, ContentViewDelegate {
     
-    var currentLine:Line?
-
-    //this class will draw all of our lines in it!!!
-    // this class only needs to draw our new line
+    private var drawLine:Line?
+    
+    func drawLine(line: Line) {
+        self.drawLine = line
+        self.setNeedsDisplay()
+    }
+    
+    func clear(){
+        self.drawLine = nil
+        self.setNeedsDisplay()
+    }
     
     override func draw(in ctx: CGContext) {
-        ctx.setLineCap(.round)
-        ctx.setStrokeColor(UIColor.purple.cgColor)
-        ctx.setLineWidth(5.0)
-        ctx.addPath(currentLine!.path.cgPath)
-        ctx.strokePath()
-    }
+        if let line = drawLine{
+            ctx.clip(to: self.frame)
+            ctx.beginPath()
+            ctx.setStrokeColor(UIColor.blue.cgColor)
+            ctx.setLineCap(CGLineCap.round)
+            ctx.setLineWidth(5.0)
 
+            //draw our line
+            for segment in line.segments{
+                ctx.moveTo(x: segment.start.x, y: segment.start.y)
+                ctx.addLineTo(x: segment.end.x, y: segment.end.y)
+            }
+            ctx.strokePath()
+            //ctx.stroke(self.frame)
+        }else{
+            print("tried to draw line but it was nil so moving on without fatalerror")
+        }
+                
+    }
+    
 }
+
+

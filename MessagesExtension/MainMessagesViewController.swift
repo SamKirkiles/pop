@@ -9,8 +9,14 @@
 import UIKit
 import Messages
 
-class MainMessagesViewController: MSMessagesAppViewController {
+protocol TransitionDelegate{
+    func didTransition(presentationStyle: MSMessagesAppPresentationStyle)
+}
 
+class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate {
+    
+    var delegate:TransitionDelegate? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -24,6 +30,9 @@ class MainMessagesViewController: MSMessagesAppViewController {
         guard let controller: SelectPhotoCollectionViewController = storyboard?.instantiateViewController(withIdentifier: SelectPhotoCollectionViewIdentifier) as? SelectPhotoCollectionViewController else{
             fatalError("Unable to instantiate a SelectPhotoCollectionViewController")
         }
+        
+        controller.delegate = self
+        self.delegate = controller
         
         for child in childViewControllers{
             child.willMove(toParentViewController: nil)
@@ -53,9 +62,9 @@ class MainMessagesViewController: MSMessagesAppViewController {
     // MARK: - Conversation Handling
     
     override func willBecomeActive(with conversation: MSConversation) {
-
+        
         presentViewcontroller(for: conversation, with: presentationStyle)
-
+        
     }
     
     override func didResignActive(with conversation: MSConversation) {
@@ -97,17 +106,29 @@ class MainMessagesViewController: MSMessagesAppViewController {
         // Called after the extension transitions to a new presentation style.
         
         // Use this method to finalize any behaviors associated with the change in presentation style.
+        
+        guard let delegate = self.delegate else{
+            fatalError("transition delegate was nil!")
+        }
+        
+        delegate.didTransition(presentationStyle: presentationStyle)
     }
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    
+    
+    // MARK: - Delegate
+    
+    func sendPhoto(photo: UIImage) {
+        
+        let layout = MSMessageTemplateLayout()
+        layout.image = photo
+        
+        let message = MSMessage()
+        message.layout = layout
+        
+        self.activeConversation?.insert(message, completionHandler: { (error) in
+            print(error)
+        })
+        
     }
-    */
-
 }

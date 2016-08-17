@@ -17,7 +17,15 @@ let SelectPhotoCollectionViewIdentifier = "SelectPhotoID"
 
 let CameraCellReuseIdentifier = "CameraCellID"
 
-class SelectPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout{
+protocol SelectPhotoDelegate {
+    func sendPhoto(photo:UIImage)
+}
+
+class SelectPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, SendImageDelegate, TransitionDelegate{
+    
+    var delegate:SelectPhotoDelegate? = nil
+    
+    var transitionDelegate: TransitionDelegate? = nil
     
     var photosFetchAsset:PHFetchResult<PHAsset>{
         get{
@@ -127,6 +135,8 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
                     fatalError("newImage was nil")
                 }
                 drawController.image = image
+                drawController.sendImageDelegate = self
+                self.transitionDelegate = drawController
 
                 self.present(drawController, animated: true, completion: {
                     //present completed
@@ -155,6 +165,26 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         let photos = PHAsset.fetchAssets(with: .image, options: options)
         return photos
     }
+    
+    //MARK: Send photo Delegate
+    
+    func sendImage(image: UIImage) {
+        if let delegate = self.delegate{
+            delegate.sendPhoto(photo: image)
+        }else{
+            fatalError("Delegate was nil!")
+        }
+    }
+    
+    //MARK: Transition Delegate
+    
+    func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
+        guard let delegate = self.transitionDelegate else{
+            fatalError("transition delegate was nil on SelectPhotoViewController")
+        }
+        
+        delegate.didTransition(presentationStyle: presentationStyle)
+    }
 
 
 }
@@ -165,7 +195,7 @@ extension PHAsset{
         let imageManager = PHCachingImageManager();
         let options = PHImageRequestOptions()
         options.deliveryMode = .fastFormat
-        options.isSynchronous = true
+        options.isSynchronous = false
         imageManager.requestImage(for: self, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFit, options: options, resultHandler: {newImage,info in
             imageResults(newImage, info)
         })
@@ -176,7 +206,7 @@ extension PHAsset{
         let imageManager = PHCachingImageManager();
         let options = PHImageRequestOptions()
         options.deliveryMode = .highQualityFormat
-        options.isSynchronous = true
+        options.isSynchronous = false
         imageManager.requestImage(for: self, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: options, resultHandler: {newImage,info in
             imageResults(newImage, info)
         })

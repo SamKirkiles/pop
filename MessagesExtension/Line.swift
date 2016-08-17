@@ -9,8 +9,18 @@
 import Foundation
 import UIKit
 
+struct Segment{
+    var start:CGPoint
+    var end:CGPoint
+    
+    init(start _start: CGPoint, end _end:CGPoint) {
+        start = _start
+        end = _end
+    }
+}
+
 class Line {
-    var path:UIBezierPath = UIBezierPath()
+    var segments:[Segment] = []
     var drawColor:CGColor
     var width:CGFloat
     var rect:CGRect
@@ -23,12 +33,12 @@ class Line {
 }
 
 extension Line{
-    func addPoint(point:CGPoint){
-        path.addLine(to: point)
-        path.move(to: point)
+    func addSegment(start:CGPoint, end: CGPoint){
+        let newSegment = Segment(start: start, end: end)
+        self.segments.append(newSegment)
     }
     
     func clearPath(){
-        path.removeAllPoints()
+        segments.removeAll()
     }
 }
