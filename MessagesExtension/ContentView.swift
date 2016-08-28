@@ -9,11 +9,15 @@
 import UIKit
 import AVFoundation
 
+protocol ZoomDelegate{
+    func scrollViewIsZooming() -> Bool
+}
+
 protocol ContentViewDelegate {
     func drawLine(line: Line)
 }
 
-class ContentView: UIView, DrawViewControllerScrollDelegate {
+class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizerDelegate {
     
     var image:UIImage?
     
@@ -22,12 +26,18 @@ class ContentView: UIView, DrawViewControllerScrollDelegate {
     
     var lastPoint:CGPoint?
     
+    
     var savedLines:[Line] = []
     
     var drawingDelegate:ContentViewDelegate? = nil
+    var zoomDelegate:ZoomDelegate? = nil
     
     var zoom:CGFloat = 1.0
-
+    
+    //Drawing Variables
+    var drawColor:CGColor = #colorLiteral(red: 0.2202886641, green: 0.7022308707, blue: 0.9593387842, alpha: 1).cgColor
+    var drawWidth:CGFloat = 10.0
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -45,35 +55,42 @@ class ContentView: UIView, DrawViewControllerScrollDelegate {
     }
     
     func startup(){
+        
         self.drawImageLayer = DrawingLayer()
         self.drawImageLayer?.backgroundColor = UIColor.clear.cgColor
         self.drawingDelegate = self.drawImageLayer
         self.layer.addSublayer(drawImageLayer!)
-
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: nil)
+        self.gestureRecognizers?.append(panGesture)
+        
+        
     }
     
     //MARK: Touch methods
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //get all touches 
-        //create a new line and send to delegate
         
         
-        guard let touch = touches.first else{
-            fatalError("touches.first was nil")
+        guard let touch = touches.first, let event = event else{
+            fatalError("event or touch returned nil")
+        }
+        lastPoint = touch.location(in: self)
+        self.tempLine = Line(drawColor: drawColor, width: drawWidth, rect: self.frame)
+        if let touches = event.coalescedTouches(for: touch){
+            for touch in touches{
+                self.tempLine?.addSegment(start: lastPoint!, end: touch.location(in: self))
+                lastPoint! = touch.location(in: self)
+            }
+            self.drawingDelegate?.drawLine(line: tempLine!)
+        }else{
+            fatalError("touches returned nil")
         }
         
-        lastPoint = touch.location(in: self)
-        self.tempLine = Line(drawColor: UIColor.red.cgColor, width: 3.0, rect: self.frame)
-        let start = touch.location(in: self)
-        self.tempLine?.addSegment(start: start, end: start)
-        self.drawingDelegate?.drawLine(line: tempLine!)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //get all touches
-        //add to temp line
-        //update delegate each time
+        
         guard let touch = touches.first, let event = event else{
             fatalError("event or touch returned nil")
         }
@@ -82,11 +99,13 @@ class ContentView: UIView, DrawViewControllerScrollDelegate {
             for touch in touches{
                 self.tempLine?.addSegment(start: lastPoint!, end: touch.location(in: self))
                 lastPoint! = touch.location(in: self)
-                self.drawingDelegate?.drawLine(line: tempLine!)
             }
+            self.drawingDelegate?.drawLine(line: tempLine!)
+            
         }else{
             fatalError("touches returned nil")
         }
+        
         
     }
     
@@ -100,9 +119,16 @@ class ContentView: UIView, DrawViewControllerScrollDelegate {
         }
     }
     
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.drawImageLayer?.clear()
+    }
+    
     
     
     override func draw(_ rect: CGRect) {
+        
+        self.layer.drawsAsynchronously = true
+        
         guard let image = self.image else {
             fatalError("Content view did not have valid image assigned!")
         }
@@ -117,7 +143,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate {
             context.setLineWidth(line.width)
             context.setLineCap(.round)
             context.setStrokeColor(line.drawColor)
-            print(line.rect)
+            self.contentScaleFactor = 2
             for segment in line.segments{
                 
                 let startx = (segment.start.x * self.frame.width)/line.rect.width
@@ -126,21 +152,42 @@ class ContentView: UIView, DrawViewControllerScrollDelegate {
                 let endx = (segment.end.x * self.frame.width)/line.rect.width
                 let endy = (segment.end.y * self.frame.height)/line.rect.height
                 
-                context.moveTo(x: startx, y: starty)
-                context.addLineTo(x: endx, y: endy)
+                context.move(to: CGPoint(x: startx, y: starty))
+                context.addLine(to: CGPoint(x: endx, y: endy))
             }
             
-            //context.stroke(rect)
             context.strokePath()
         }
     }
     
-    func zoomChanged(value: CGFloat) {
-        // the user is zooming in
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        guard let delegate = self.zoomDelegate else{
+            fatalError("zoom delegate was nil")
+        }
+        
+        let iszoom = delegate.scrollViewIsZooming()
+        
+        return !iszoom
     }
     
-}
-
-extension CGPoint{
+    func undo(){
+        if self.savedLines.count > 0{
+            self.savedLines.removeLast()
+            self.setNeedsDisplay()
+        }
+    }
+    
+    func changeColor(color:CGColor){
+        self.drawColor = color
+    }
+    
+    func changeWidth(width:CGFloat){
+        self.drawWidth = width
+    }
+    
+    func zoomChanged(value: CGFloat) {
+        // the user is zooming in
+        self.zoom = value
+    }
     
 }

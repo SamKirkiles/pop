@@ -13,8 +13,9 @@
       "scale" : "3x"
     },
     {
-      "idiom" : "ipad",
       "size" : "67x50",
+      "idiom" : "ipad",
+      "filename" : "icon_67x50_2x.png",
       "scale" : "2x"
     },
     {
@@ -25,12 +26,14 @@
     {
       "size" : "27x20",
       "idiom" : "universal",
+      "filename" : "icon_27x20_2x.png",
       "scale" : "2x",
       "platform" : "ios"
     },
     {
       "size" : "27x20",
       "idiom" : "universal",
+      "filename" : "icon_27x20_3x.png",
       "scale" : "3x",
       "platform" : "ios"
     },

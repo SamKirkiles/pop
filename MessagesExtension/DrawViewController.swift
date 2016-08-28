@@ -18,13 +18,19 @@ protocol DrawViewControllerScrollDelegate {
 
 protocol SendImageDelegate{
     func sendImage(image:UIImage)
+    func requestStyle(style:MSMessagesAppPresentationStyle)
 }
 
-class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDelegate {
+protocol PresentationStyleDelegate{
+    func getPresentationStyle() -> MSMessagesAppPresentationStyle
+}
+
+class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDelegate, BrushSettingsDelegate, ZoomDelegate {
 
     //Delegates
     var scrollDelegate: DrawViewControllerScrollDelegate? = nil
     var sendImageDelegate:SendImageDelegate? = nil
+    var presentationStyleDelegate:PresentationStyleDelegate? = nil
     
     //IBOutlets
     @IBOutlet weak var scrollView: UIScrollView!
@@ -39,19 +45,30 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var contentViewLeftConstraint: NSLayoutConstraint!
     
     
+    @IBOutlet weak var sendButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var closeButtonTopConstraint: NSLayoutConstraint!
     //Properties
     var image:UIImage?
     
+    
+    //Buttons
+    @IBOutlet weak var colorPickerButton: UIButton!
+    
+    //Misc
+    
+    var zooming = false
+    
     override func viewWillAppear(_ animated: Bool) {
         self.scrollView.panGestureRecognizer.minimumNumberOfTouches = 2
+        self.scrollView.delaysContentTouches = false
+        
         
         guard let image = self.image else {
             fatalError("Image was nil on Draw View Controller")
         }
         self.contentView.image = image
         self.scrollDelegate = self.contentView
-    }
+        }
     
     //View controller lifecycle
     override func viewDidLoad() {
@@ -59,6 +76,14 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
+        self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
+        
+        guard let delegate = self.presentationStyleDelegate else{
+            fatalError("Presenationstyle delegate was nil on drawviewcontroller")
+        }
+        self.updateButtonConstraints(presentationStyle: delegate.getPresentationStyle())
+        
+        self.contentView.zoomDelegate = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -77,7 +102,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             self.updateConstraints()
         }
     }
-
+    
     
     func updateConstraints(){
         guard let image = self.image else {
@@ -118,9 +143,25 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
 
     }
     
+    func updateButtonConstraints(presentationStyle: MSMessagesAppPresentationStyle){
+        if presentationStyle == .compact{
+            self.closeButtonTopConstraint.constant = 0
+            self.sendButtonTopConstraint.constant = 0
+        }else{
+            self.closeButtonTopConstraint.constant = 80
+            self.sendButtonTopConstraint.constant = 80
+        }
+    }
+    
     //MARK: UIButtons
     
     @IBAction func closePressed(_ sender: AnyObject) {
+        guard let sendDelegate = self.sendImageDelegate else {
+            fatalError("Tried to send image but class did not have a send image delegate")
+        }
+        
+        sendDelegate.requestStyle(style: .compact)
+
         self.dismiss(animated: true, completion: {
             //completion
         })
@@ -141,7 +182,25 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             fatalError("Tried to send image but class did not have a send image delegate")
         }
     
+        sendDelegate.requestStyle(style: .compact)
         sendDelegate.sendImage(image: image)
+    }
+    
+    @IBAction func brushSettingsPressed(_ sender: AnyObject) {
+        self.performSegue(withIdentifier: BrushSettingsSegueID, sender: self)
+    }
+    
+    
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == BrushSettingsSegueID{
+            let controller = segue.destination as! BrushSettingsViewController
+            controller.delegate = self
+            controller.sliderInitialWidth = Float(self.contentView.drawWidth)
+        }
+    }
+    @IBAction func undoPressed(_ sender: AnyObject) {
+        self.contentView.undo()
     }
 
     override func didReceiveMemoryWarning() {
@@ -162,14 +221,35 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         return self.scrollViewBase
     }
     
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        print("Will begin zooming")
+        zooming = true
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        print("did end zooming")
+        zooming = false
+    }
+    
+    func scrollViewIsZooming() -> Bool {
+        return zooming
+    }
+
+    
     //MARK: Transition Delegate
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
-        if presentationStyle == .compact{
-            self.closeButtonTopConstraint.constant = 0
-        }else{
-            self.closeButtonTopConstraint.constant = 80
-        }
+        updateButtonConstraints(presentationStyle: presentationStyle)
+    }
+    
+    
+    func colorChanged(color: CGColor) {
+        self.contentView.changeColor(color: color)
+        self.colorPickerButton.tintColor = UIColor(cgColor: color)
+    }
+    
+    func widthChagned(width: CGFloat) {
+        self.contentView.changeWidth(width: width)
     }
 
 }

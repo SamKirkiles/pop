@@ -13,17 +13,16 @@ protocol TransitionDelegate{
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle)
 }
 
-class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate {
+class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate , PresentationStyleDelegate{
+    
+
+    
     
     var delegate:TransitionDelegate? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //self.performSegue(withIdentifier: SelectPhotoCollectionViewSegue, sender: self)
-        
-        
-        // Do any additional setup after loading the view.
     }
     
     private func presentViewcontroller(for conversation: MSConversation, with presentationStyle: MSMessagesAppPresentationStyle){
@@ -33,6 +32,7 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         
         controller.delegate = self
         self.delegate = controller
+        controller.presentationStyleDelegate = self
         
         for child in childViewControllers{
             child.willMove(toParentViewController: nil)
@@ -114,6 +114,13 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         delegate.didTransition(presentationStyle: presentationStyle)
     }
     
+    func getPresentationStyle() -> MSMessagesAppPresentationStyle {
+        return self.presentationStyle
+    }
+    
+    func requestStyle(presentationStyle: MSMessagesAppPresentationStyle) {
+        self.requestPresentationStyle(presentationStyle)
+    }
     
     
     // MARK: - Delegate
