@@ -34,6 +34,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     @IBOutlet weak var closeButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var snapPhotoButton: UIButton!
     @IBOutlet weak var choosePhotoButton: UIButton!
+    @IBOutlet weak var saveButton: UIButton!
     //Delegates
     var delegate:CameraDelegate? = nil
     
@@ -59,6 +60,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         self.stillImageView.isHidden = true
         self.closeButton.isHidden = true
         self.snapPhotoButton.isHidden = false
+        self.saveButton.isHidden = true
         
         self.setupCamera()
 
@@ -83,7 +85,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         self.captureSession?.addOutput(stillImageOutput)
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.videoGravity = AVLayerVideoGravityResizeAspect
+        previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
         previewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
         previewLayer?.frame = self.view.bounds
         self.view.layer.insertSublayer(previewLayer!, below: stillImageView.layer)
@@ -130,6 +132,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             closeButton.isHidden = false
             stillImageView.isHidden = false
             choosePhotoButton.isHidden = false
+            saveButton.isHidden = false
             
             
             
@@ -148,7 +151,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             videoConnection.videoOrientation = AVCaptureVideoOrientation.portrait
             
             let settings = AVCapturePhotoSettings()
-            settings.flashMode = .on
+            
+            
+            
             stillImageOutput?.capturePhoto(with: settings, delegate: self)
         }
     }
@@ -171,6 +176,31 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         closeButton.isHidden = true
         snapPhotoButton.isHidden = false
         choosePhotoButton.isHidden = true
+        saveButton.isHidden = true
+    }
+    
+    @IBAction func saveButtonPressed(_ sender: AnyObject) {
+        let alertController = UIAlertController(title: "Save to camera roll?", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {(action) in
+            //cancel
+        })
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
+            guard let image = self.outputImage else{
+                fatalError("output image was nil")
+            }
+            
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(saveAction)
+        
+        self.present(alertController, animated: true, completion: {
+            
+        })
     }
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {

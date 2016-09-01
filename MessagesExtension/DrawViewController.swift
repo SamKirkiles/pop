@@ -53,6 +53,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     
     //Buttons
     @IBOutlet weak var colorPickerButton: UIButton!
+    @IBOutlet weak var saveButton: UIButton!
     
     //Misc
     
@@ -84,6 +85,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         self.updateButtonConstraints(presentationStyle: delegate.getPresentationStyle())
         
         self.contentView.zoomDelegate = self
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -186,6 +188,38 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         sendDelegate.sendImage(image: image)
     }
     
+    @IBAction func savePressed(_ sender: AnyObject) {
+        let alertController = UIAlertController(title: "Save to camera roll?", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {(action) in
+            //cancel
+        })
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
+            
+            UIGraphicsBeginImageContextWithOptions(self.contentView.bounds.size, false, 3.0)
+            guard let context = UIGraphicsGetCurrentContext()else{
+                fatalError("context was nil!")
+            }
+            self.contentView.layer.render(in: context)
+
+            guard let image = UIGraphicsGetImageFromCurrentImageContext() else{
+                fatalError("Tried to create image from current graphics context but it returned nil!")
+            }
+            
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(saveAction)
+        
+        self.present(alertController, animated: true, completion: {
+            
+        })
+
+    }
+    
     @IBAction func brushSettingsPressed(_ sender: AnyObject) {
         self.performSegue(withIdentifier: BrushSettingsSegueID, sender: self)
     }
@@ -222,12 +256,10 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     }
     
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        print("Will begin zooming")
         zooming = true
     }
     
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        print("did end zooming")
         zooming = false
     }
     

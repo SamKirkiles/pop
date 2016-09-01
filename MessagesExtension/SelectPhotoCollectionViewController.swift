@@ -190,7 +190,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     func didChooseImage(image: UIImage) {
         self.collectionView?.isUserInteractionEnabled = false
-        self.dismiss(animated: true, completion: {
+        self.dismiss(animated: false, completion: {
             
         })
         let drawController = storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
@@ -198,7 +198,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         drawController.sendImageDelegate = self
         drawController.presentationStyleDelegate = self
         self.transitionDelegate = drawController
-        self.present(drawController, animated: true, completion: {
+        self.present(drawController, animated: false, completion: {
             self.collectionView?.isUserInteractionEnabled = true
         })
     }

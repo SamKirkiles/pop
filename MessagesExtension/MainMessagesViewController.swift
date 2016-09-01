@@ -8,23 +8,47 @@
 
 import UIKit
 import Messages
+import StoreKit
 
 protocol TransitionDelegate{
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle)
 }
 
+protocol MessageDelegate{
+    func didSelectImage(message:MSMessage, convo:MSConversation)
+}
+
 class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate , PresentationStyleDelegate{
     
-
-    
-    
     var delegate:TransitionDelegate? = nil
+    var messageDelegate:MessageDelegate? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if SKPaymentQueue.canMakePayments(){
+            IAPManager.sharedInstance.setupInAppPurchases()
+        }
         
     }
     
+    override func didBecomeActive(with conversation: MSConversation) {
+        if let message = conversation.selectedMessage{
+            //get the message url
+            if let url = message.url{
+                if let components = URLComponents(url: url, resolvingAgainstBaseURL: false){
+                    for item in components.queryItems!{
+                        if item.name == "image"{
+                            guard let data = Data.init(base64Encoded: item.value!) else{
+                                fatalError("data was nil")
+                            }
+                            let image = UIImage(data: data)
+                            print(image)
+                        }
+                    }
+                }
+            }
+        }
+    }
     private func presentViewcontroller(for conversation: MSConversation, with presentationStyle: MSMessagesAppPresentationStyle){
         guard let controller: SelectPhotoCollectionViewController = storyboard?.instantiateViewController(withIdentifier: SelectPhotoCollectionViewIdentifier) as? SelectPhotoCollectionViewController else{
             fatalError("Unable to instantiate a SelectPhotoCollectionViewController")
@@ -52,6 +76,16 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         controller.didMove(toParentViewController: self)
+    }
+    
+    
+    
+    override func didSelect(_ message: MSMessage, conversation: MSConversation) {
+        if let delegate = self.messageDelegate{
+            delegate.didSelectImage(message: message, convo: conversation)
+        }
+        
+        print("did select message")
     }
     
     override func didReceiveMemoryWarning() {
@@ -132,6 +166,23 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         
         let message = MSMessage()
         message.layout = layout
+        
+        var components = URLComponents()
+        
+        guard let data = UIImagePNGRepresentation(photo) else{
+            fatalError("could not write image to data")
+        }
+        
+        let dataString = data.base64EncodedString()
+        
+        components.queryItems?.append(URLQueryItem(name: "image", value: dataString))
+        
+        if let url = components.url{
+            message.url = url
+            
+        }else{
+            fatalError("could not write to url")
+        }
         
         self.activeConversation?.insert(message, completionHandler: { (error) in
             print(error)
