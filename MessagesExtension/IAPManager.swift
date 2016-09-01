@@ -13,6 +13,8 @@ let ProductIdentifiers: [String] = ["com.skirkiles.pop.fullpalate"]
 
 class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver{
     
+
+    
     static let sharedInstance = IAPManager()
     var request:SKProductsRequest!
     var products:[SKProduct] = []
@@ -28,6 +30,7 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
         productRequest.delegate = self
         productRequest.start()
         
+        
     }
     
     func createPaymentRequestForProduct(product:SKProduct){
@@ -40,27 +43,41 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
         
         UserDefaults.standard.set(true, forKey: productIdentifier)
         UserDefaults.standard.synchronize()
+
         
     }
+    
+    func restorePurchases(){
+        if (SKPaymentQueue.canMakePayments()) {
+            SKPaymentQueue.default().restoreCompletedTransactions()
+
+        }
+    }
+    
     
     //MARK: SKPaymentTransactionObserver
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions{
+
             switch transaction.transactionState{
             case.purchasing:
                 print("Purchasing")
-                
+
             case.deferred:
                 print("Deferred")
-                
+
             case.failed:
                 print("Failed")
                 SKPaymentQueue.default().finishTransaction(transaction)
+
             case.purchased:
-                print("Purchased")
+                print("Purchased", transaction.payment.productIdentifier)
                 unlockPurchasedFunctionalityForProductIdentifier(productIdentifier: transaction.payment.productIdentifier)
+                SKPaymentQueue.default().finishTransaction(transaction)
             case.restored:
                 print("Restored")
+                unlockPurchasedFunctionalityForProductIdentifier(productIdentifier: transaction.payment.productIdentifier)
+                SKPaymentQueue.default().finishTransaction(transaction)
                 
             }
         }

@@ -25,9 +25,11 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         if SKPaymentQueue.canMakePayments(){
             IAPManager.sharedInstance.setupInAppPurchases()
         }
+                
         
     }
     

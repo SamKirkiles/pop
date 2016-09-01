@@ -26,7 +26,7 @@ protocol PresentationStyleDelegate{
 }
 
 class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDelegate, BrushSettingsDelegate, ZoomDelegate {
-
+    
     //Delegates
     var scrollDelegate: DrawViewControllerScrollDelegate? = nil
     var sendImageDelegate:SendImageDelegate? = nil
@@ -69,12 +69,12 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }
         self.contentView.image = image
         self.scrollDelegate = self.contentView
-        }
+    }
     
     //View controller lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(self.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         
         self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
@@ -93,6 +93,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     }
     
     func rotated(){
+
         if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation))
         {
             self.updateConstraints()
@@ -102,6 +103,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         if(UIDeviceOrientationIsPortrait(UIDevice.current.orientation))
         {
             self.updateConstraints()
+            
         }
     }
     
@@ -110,6 +112,9 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         guard let image = self.image else {
             fatalError("Image was nil in DrawViewController when calling UpdateConstraints!")
         }
+        
+        
+        
         
         // if the width is greater than the height
         if image.size.width>image.size.height{
@@ -136,13 +141,32 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
             self.contentView.setNeedsDisplay()
         }else{
-            contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-            contentViewBottomConstraint.constant = (self.view.frame.width - (self.view.frame.width * image.size.width)/image.size.height)/2
-            self.contentView.setNeedsDisplay()
-            contentViewRightConstraint.constant = 0
-            contentViewLeftConstraint.constant = 0
-        }
+            if self.view.frame.height >= self.view.frame.width{
+                contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
+                contentViewBottomConstraint.constant = ((self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2)
+                contentViewRightConstraint.constant = 0
+                contentViewLeftConstraint.constant = 0
+                self.contentView.setNeedsDisplay()
 
+            }else{
+                contentViewTopConstraint.constant = 0
+                contentViewBottomConstraint.constant = 0
+                contentViewRightConstraint.constant = ((self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2)
+                contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                
+                self.contentView.setNeedsDisplay()
+
+
+            }
+            
+            
+        }
+        
+        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
+        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
+        self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
+
+        
     }
     
     func updateButtonConstraints(presentationStyle: MSMessagesAppPresentationStyle){
@@ -163,7 +187,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }
         
         sendDelegate.requestStyle(style: .compact)
-
+        
         self.dismiss(animated: true, completion: {
             //completion
         })
@@ -183,7 +207,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         guard let sendDelegate = self.sendImageDelegate else {
             fatalError("Tried to send image but class did not have a send image delegate")
         }
-    
+        
         sendDelegate.requestStyle(style: .compact)
         sendDelegate.sendImage(image: image)
     }
@@ -202,7 +226,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                 fatalError("context was nil!")
             }
             self.contentView.layer.render(in: context)
-
+            
             guard let image = UIGraphicsGetImageFromCurrentImageContext() else{
                 fatalError("Tried to create image from current graphics context but it returned nil!")
             }
@@ -217,7 +241,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         self.present(alertController, animated: true, completion: {
             
         })
-
+        
     }
     
     @IBAction func brushSettingsPressed(_ sender: AnyObject) {
@@ -225,7 +249,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     }
     
     
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == BrushSettingsSegueID{
             let controller = segue.destination as! BrushSettingsViewController
@@ -236,7 +260,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBAction func undoPressed(_ sender: AnyObject) {
         self.contentView.undo()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -249,6 +273,11 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }else{
             fatalError("scrolldelegate was nil!")
         }
+        
+        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
+        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
+        self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
+
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -266,7 +295,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     func scrollViewIsZooming() -> Bool {
         return zooming
     }
-
+    
     
     //MARK: Transition Delegate
     
@@ -283,5 +312,5 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     func widthChagned(width: CGFloat) {
         self.contentView.changeWidth(width: width)
     }
-
+    
 }

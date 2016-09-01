@@ -191,7 +191,7 @@
                                 <size key="customSize" width="100" height="100"/>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="Q5P-Um-v3y" customClass="PhotoCollectionViewCell" customModule="MessagesExtension" customModuleProvider="target">
-                                <rect key="frame" x="138" y="84" width="100" height="100"/>
+                                <rect key="frame" x="137.5" y="84" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
@@ -349,7 +349,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="10" translatesAutoresizingMaskIntoConstraints="NO" id="1ha-8C-Oc8">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.5" maximumZoomScale="10" translatesAutoresizingMaskIntoConstraints="NO" id="1ha-8C-Oc8">
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gbt-B1-nbU">
                                         <subviews>
@@ -517,7 +517,7 @@
                                             </collectionViewFlowLayout>
                                             <cells>
                                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="freeColorCell" id="JMJ-TA-txb">
-                                                    <rect key="frame" x="0.0" y="3" width="35" height="35"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                         <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
@@ -526,7 +526,7 @@
                                                     <size key="customSize" width="35" height="35"/>
                                                 </collectionViewCell>
                                                 <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="premiumColorCell" id="8Ih-ba-Gxe">
-                                                    <rect key="frame" x="45" y="3" width="35" height="35"/>
+                                                    <rect key="frame" x="0.0" y="46" width="35" height="35"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                         <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>

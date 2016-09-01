@@ -117,14 +117,14 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
             if UserDefaults.standard.bool(forKey: "com.skirkiles.pop.fullpalate") == true{
                 delegate.colorChanged(color: colors[indexPath.row].cgColor)
             }else{
-                let alertController = UIAlertController(title: "Full Color Palate", message: "This color requires the full color palate which can be purchased.", preferredStyle: .alert)
+                let alertController = UIAlertController(title: "Buy All Colors", message: "You must buy the POP Full Color Palette to use this color.", preferredStyle: .alert)
                 let purchaseAction = UIAlertAction(title: "Buy Now", style: .default, handler: { (action) in
                     if let product = IAPManager.sharedInstance.products.first{
                         IAPManager.sharedInstance.createPaymentRequestForProduct(product: product)
                     }
                 })
                 
-                let cancelAction = UIAlertAction(title: "cancel", style: .cancel, handler: { (action) in
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                     //canceled
                 })
                 

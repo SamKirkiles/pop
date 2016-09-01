@@ -89,10 +89,10 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CameraCellReuseIdentifier, for: indexPath)
             
             cell.contentView.layer.masksToBounds = true
-            cell.contentView.layer.cornerRadius = 3.0
+            cell.contentView.layer.cornerRadius = 5.0
             
             cell.layer.masksToBounds = false
-            cell.layer.cornerRadius = 3.0
+            cell.layer.cornerRadius = 5.0
             cell.layer.shadowOffset = CGSize(width: 3, height: 3)
             cell.layer.shadowColor = UIColor.gray.cgColor
             cell.layer.shadowRadius = 5.0
@@ -127,10 +127,10 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             }
             
             cell.contentView.layer.masksToBounds = true
-            cell.contentView.layer.cornerRadius = 3.0
+            cell.contentView.layer.cornerRadius = 5.0
             
             cell.layer.masksToBounds = false
-            cell.layer.cornerRadius = 3.0
+            cell.layer.cornerRadius = 5.0
             cell.layer.shadowOffset = CGSize(width: 3, height: 3)
             cell.layer.shadowColor = UIColor.gray.cgColor
             cell.layer.shadowRadius = 5.0
