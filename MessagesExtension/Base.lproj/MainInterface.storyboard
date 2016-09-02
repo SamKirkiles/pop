@@ -434,7 +434,7 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttonOutline" translatesAutoresizingMaskIntoConstraints="NO" id="W6m-SN-qEd">
-                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="55" id="UH9-DG-mzP"/>
                                     <constraint firstAttribute="height" constant="55" id="wl3-bV-2ki"/>
@@ -444,7 +444,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="W6m-SN-qEd" secondAttribute="bottom" constant="70" id="3wh-NF-8LG"/>
-                            <constraint firstItem="1ha-8C-Oc8" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="5Ej-Kt-qmU"/>
                             <constraint firstItem="Prn-X3-x6h" firstAttribute="top" secondItem="1kZ-cr-icb" secondAttribute="bottom" id="5P4-4L-Uk0"/>
                             <constraint firstItem="W6m-SN-qEd" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="5oW-7H-lV3"/>
                             <constraint firstItem="ese-BQ-vqt" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leadingMargin" constant="-5" id="9RZ-aR-nJC"/>
@@ -452,7 +451,6 @@
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leading" id="DXu-Xu-mEy"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Prn-X3-x6h" secondAttribute="trailing" constant="-5" id="GV4-0G-Ivf"/>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" id="Gvq-pk-2R5"/>
-                            <constraint firstItem="1ha-8C-Oc8" firstAttribute="centerY" secondItem="rO7-at-i6K" secondAttribute="centerY" id="Hrl-RN-w27"/>
                             <constraint firstItem="iZt-sJ-HM3" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leadingMargin" constant="-5" id="K5S-8c-OAW"/>
                             <constraint firstItem="CRH-3v-gy4" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="OGk-Kf-um1"/>
                             <constraint firstAttribute="trailing" secondItem="1ha-8C-Oc8" secondAttribute="trailing" id="aqy-nl-vjF"/>
