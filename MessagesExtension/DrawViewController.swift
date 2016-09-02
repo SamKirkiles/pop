@@ -37,6 +37,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var scrollViewBase: UIView!
     @IBOutlet weak var contentView: ContentView!
     
+    @IBOutlet weak var buttonOutline: UIImageView!
     //Constraints
     
     @IBOutlet weak var contentViewTopConstraint: NSLayoutConstraint!
@@ -54,6 +55,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     //Buttons
     @IBOutlet weak var colorPickerButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var undoButton: UIButton!
     
     //Misc
     
@@ -118,28 +120,41 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         // if the width is greater than the height
         if image.size.width>image.size.height{
-            //top constraint
-            contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-            //bottom constraint
-            contentViewBottomConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-            //right constratint should be 0 because it needs to touch the sides
-            contentViewRightConstraint.constant = 0
-            //left constraint should be 0 because it needs to touch the sides
-            contentViewLeftConstraint.constant = 0
-            //Finally, set needs display
-            self.contentView.setNeedsDisplay()
             
-            // if the width is less than the hieght
+            if self.view.frame.height >= self.view.frame.width{
+                contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
+                contentViewBottomConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
+                contentViewRightConstraint.constant = 0
+                contentViewLeftConstraint.constant = 0
+                self.contentView.setNeedsDisplay()
+
+
+                
+            }else{
+                contentViewTopConstraint.constant = 0
+                contentViewBottomConstraint.constant = 0
+                contentViewRightConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                self.contentView.setNeedsDisplay()
+
+            }
         }else if image.size.width<image.size.height{
-            //The bottom constraint should be 0
-            contentViewBottomConstraint.constant = 0
-            //The top constraint should be 0
-            contentViewTopConstraint.constant = 0
-            //We need to find the correct right constraint
-            contentViewRightConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
-            //We need to find the left constraint
-            contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
-            self.contentView.setNeedsDisplay()
+            if self.view.frame.height >= self.view.frame.width{
+                contentViewBottomConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
+                contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
+                contentViewRightConstraint.constant = 0
+                contentViewLeftConstraint.constant = 0
+                self.contentView.setNeedsDisplay()
+
+            }else{
+                contentViewBottomConstraint.constant = 0
+                contentViewTopConstraint.constant = 0
+                contentViewRightConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                self.contentView.setNeedsDisplay()
+
+            }
+
         }else{
             if self.view.frame.height >= self.view.frame.width{
                 contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
@@ -158,10 +173,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
 
 
             }
-            
-            
         }
-        
         let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
         self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
@@ -301,6 +313,19 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
         updateButtonConstraints(presentationStyle: presentationStyle)
+        
+        if presentationStyle == .compact{
+            self.contentView.isUserInteractionEnabled = false
+            self.colorPickerButton.isHidden = true
+            self.buttonOutline.isHidden = true
+            self.undoButton.isHidden = true
+        }else{
+            self.contentView.isUserInteractionEnabled = true
+            self.colorPickerButton.isHidden = false
+            self.buttonOutline.isHidden = false
+            self.undoButton.isHidden = false
+        }
+        
     }
     
     
