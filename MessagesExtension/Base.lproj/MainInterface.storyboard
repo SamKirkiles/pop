@@ -441,7 +441,7 @@
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.24232716400000001" green="0.3505379314" blue="0.46425339370000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="W6m-SN-qEd" secondAttribute="bottom" constant="70" id="3wh-NF-8LG"/>
                             <constraint firstItem="Prn-X3-x6h" firstAttribute="top" secondItem="1kZ-cr-icb" secondAttribute="bottom" id="5P4-4L-Uk0"/>
@@ -450,11 +450,11 @@
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="CRH-3v-gy4" secondAttribute="bottom" constant="70" id="A0I-1m-pDH"/>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leading" id="DXu-Xu-mEy"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Prn-X3-x6h" secondAttribute="trailing" constant="-5" id="GV4-0G-Ivf"/>
-                            <constraint firstItem="1ha-8C-Oc8" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" id="Gvq-pk-2R5"/>
+                            <constraint firstItem="1ha-8C-Oc8" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" constant="86" id="Gvq-pk-2R5"/>
                             <constraint firstItem="iZt-sJ-HM3" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leadingMargin" constant="-5" id="K5S-8c-OAW"/>
                             <constraint firstItem="CRH-3v-gy4" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="OGk-Kf-um1"/>
                             <constraint firstAttribute="trailing" secondItem="1ha-8C-Oc8" secondAttribute="trailing" id="aqy-nl-vjF"/>
-                            <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="bottom" id="b4g-ry-DTQ"/>
+                            <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="bottom" constant="45" id="b4g-ry-DTQ"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="HnV-4L-15K" secondAttribute="bottom" constant="77" id="e1X-5S-fKV"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="ese-BQ-vqt" secondAttribute="bottom" constant="77" id="jYl-PA-fSj"/>
                             <constraint firstItem="HnV-4L-15K" firstAttribute="trailing" secondItem="rO7-at-i6K" secondAttribute="trailingMargin" constant="5" id="ypJ-dP-TGg"/>
@@ -473,6 +473,7 @@
                         <outlet property="saveButton" destination="ese-BQ-vqt" id="uKW-NB-HqV"/>
                         <outlet property="scrollView" destination="1ha-8C-Oc8" id="PVq-wu-QtO"/>
                         <outlet property="scrollViewBase" destination="gbt-B1-nbU" id="SPr-7X-QXG"/>
+                        <outlet property="scrollViewTopConstraint" destination="Gvq-pk-2R5" id="8Cu-Ld-nyZ"/>
                         <outlet property="sendButtonTopConstraint" destination="5P4-4L-Uk0" id="AAX-V0-dhR"/>
                         <outlet property="undoButton" destination="HnV-4L-15K" id="l5W-lV-pQk"/>
                         <segue destination="Voh-qI-KA9" kind="presentation" identifier="SettingsSegue" modalPresentationStyle="overCurrentContext" id="Y4G-WA-rQP"/>

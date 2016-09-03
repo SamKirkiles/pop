@@ -48,6 +48,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     
     @IBOutlet weak var sendButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var closeButtonTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
     //Properties
     var image:UIImage?
     
@@ -77,38 +78,41 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.rotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
-        
         self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
         
         guard let delegate = self.presentationStyleDelegate else{
             fatalError("Presenationstyle delegate was nil on drawviewcontroller")
         }
-        self.updateButtonConstraints(presentationStyle: delegate.getPresentationStyle())
+        if self.view.frame.width >= self.view.frame.height{
+            updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:false)
+            
+        }else{
+            updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:true)
+            
+        }
         
         self.contentView.zoomDelegate = self
         
     }
     
     override func viewDidLayoutSubviews() {
-        self.updateConstraints()
-    }
-    
-    func rotated(){
-
-        if(UIDeviceOrientationIsLandscape(UIDevice.current.orientation))
-        {
-            self.updateConstraints()
-            
+        guard let delegate = self.presentationStyleDelegate else{
+            fatalError("Presenationstyle delegate was nil on drawviewcontroller")
         }
         
-        if(UIDeviceOrientationIsPortrait(UIDevice.current.orientation))
+        
+        if(self.view.frame.width >= self.view.frame.height)
         {
+            updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:false)
+            self.updateConstraints()
+            
+        }
+        else{
+            updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:true)
             self.updateConstraints()
             
         }
     }
-    
     
     func updateConstraints(){
         
@@ -117,61 +121,49 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }
         
         
-        guard let delegate = self.presentationStyleDelegate else{
-            fatalError("Presenationstyle delegate was nil on drawviewcontroller")
-        }
-        
-        print(self.contentView.frame)
-        
-
-        
         // if the width is greater than the height
         if image.size.width>image.size.height{
             
             if self.view.frame.height >= self.view.frame.width{
-                contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-                contentViewBottomConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-                contentViewRightConstraint.constant = 0
-                contentViewLeftConstraint.constant = 0
-                self.contentView.setNeedsDisplay()
-                
-                /*contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
                 contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
                 contentViewRightConstraint.constant = 0
                 contentViewLeftConstraint.constant = 0
-                self.contentView.setNeedsDisplay()*/
+                self.contentView.setNeedsDisplay()
                 
                 
                 
             }else{
                 contentViewTopConstraint.constant = 0
                 contentViewBottomConstraint.constant = 0
-                contentViewRightConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
-                contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
                 self.contentView.setNeedsDisplay()
                 
             }
         }else if image.size.width<image.size.height{
+            //we are in portrait
             if self.view.frame.height >= self.view.frame.width{
-                contentViewBottomConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-                contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
+                
+                contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
                 contentViewRightConstraint.constant = 0
                 contentViewLeftConstraint.constant = 0
                 self.contentView.setNeedsDisplay()
-                
             }else{
                 contentViewBottomConstraint.constant = 0
                 contentViewTopConstraint.constant = 0
-                contentViewRightConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
-                contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
                 self.contentView.setNeedsDisplay()
                 
             }
             
+            
         }else{
             if self.view.frame.height >= self.view.frame.width{
-                contentViewTopConstraint.constant = (self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2
-                contentViewBottomConstraint.constant = ((self.view.frame.height - (self.view.frame.width * image.size.height)/image.size.width)/2)
+                contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
                 contentViewRightConstraint.constant = 0
                 contentViewLeftConstraint.constant = 0
                 self.contentView.setNeedsDisplay()
@@ -179,8 +171,8 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             }else{
                 contentViewTopConstraint.constant = 0
                 contentViewBottomConstraint.constant = 0
-                contentViewRightConstraint.constant = ((self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2)
-                contentViewLeftConstraint.constant = (self.view.frame.width - (self.view.frame.height * image.size.width)/image.size.height)/2
+                contentViewRightConstraint.constant = ((self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2)
+                contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
                 
                 self.contentView.setNeedsDisplay()
                 
@@ -190,16 +182,23 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
         self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
-
+        
     }
     
-    func updateButtonConstraints(presentationStyle: MSMessagesAppPresentationStyle){
+    func updateButtonConstraints(presentationStyle: MSMessagesAppPresentationStyle, portrait: Bool){
+        print(portrait)
         if presentationStyle == .compact{
             self.closeButtonTopConstraint.constant = 0
             self.sendButtonTopConstraint.constant = 0
+            scrollViewTopConstraint.constant = 0
+        }else if portrait == false{
+            self.closeButtonTopConstraint.constant = 80
+            self.sendButtonTopConstraint.constant = 80
+            scrollViewTopConstraint.constant = 65
         }else{
             self.closeButtonTopConstraint.constant = 80
             self.sendButtonTopConstraint.constant = 80
+            scrollViewTopConstraint.constant =  86
         }
     }
     
@@ -301,7 +300,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
         self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
-
+        
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -324,7 +323,13 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     //MARK: Transition Delegate
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
-        updateButtonConstraints(presentationStyle: presentationStyle)
+        if self.view.frame.width >= self.view.frame.height{
+            updateButtonConstraints(presentationStyle: presentationStyle, portrait:false)
+            
+        }else{
+            updateButtonConstraints(presentationStyle: presentationStyle, portrait:true)
+            
+        }
         
         if presentationStyle == .compact{
             self.contentView.isUserInteractionEnabled = false
