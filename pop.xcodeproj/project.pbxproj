@@ -20,6 +20,7 @@
 		84BB67341D62029700922420 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB67331D62029700922420 /* PhotoCollectionViewCell.swift */; };
 		84BB67361D6213B200922420 /* DrawViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB67351D6213B200922420 /* DrawViewController.swift */; };
 		84BB67381D62273800922420 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BB67371D62273800922420 /* ContentView.swift */; };
+		84BE468A1D7D91B500E22770 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BE46891D7D91B500E22770 /* CloudKit.framework */; };
 		84E0F1661D641C9F00FC5863 /* BrushSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */; };
 		84E0F1681D64DCEA00FC5863 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */; };
 		84E0F16A1D64EA5600FC5863 /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E0F1691D64EA5600FC5863 /* CoverViewController.swift */; };
@@ -68,6 +69,8 @@
 		84BB67331D62029700922420 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		84BB67351D6213B200922420 /* DrawViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawViewController.swift; sourceTree = "<group>"; };
 		84BB67371D62273800922420 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		84BE46881D7D91AA00E22770 /* MessagesExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MessagesExtension.entitlements; sourceTree = "<group>"; };
+		84BE46891D7D91B500E22770 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrushSettingsViewController.swift; sourceTree = "<group>"; };
 		84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		84E0F1691D64EA5600FC5863 /* CoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
@@ -80,6 +83,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84BB67191D61523E00922420 /* Messages.framework in Frameworks */,
+				84BE468A1D7D91B500E22770 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,6 +121,7 @@
 		84BB67171D61523E00922420 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84BE46891D7D91B500E22770 /* CloudKit.framework */,
 				84BB67181D61523E00922420 /* Messages.framework */,
 			);
 			name = Frameworks;
@@ -125,6 +130,7 @@
 		84BB671A1D61523E00922420 /* MessagesExtension */ = {
 			isa = PBXGroup;
 			children = (
+				84BE46881D7D91AA00E22770 /* MessagesExtension.entitlements */,
 				84BB671D1D61523E00922420 /* MainInterface.storyboard */,
 				846C3BF51D7637B900A4CE6F /* IAPManager.swift */,
 				84BB672F1D61541300922420 /* MainMessagesViewController.swift */,
@@ -202,6 +208,14 @@
 						DevelopmentTeam = 65CN9R59RJ;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -384,6 +398,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MessagesExtension/MessagesExtension.entitlements;
 				DEVELOPMENT_TEAM = 65CN9R59RJ;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -402,6 +417,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MessagesExtension/MessagesExtension.entitlements;
 				DEVELOPMENT_TEAM = 65CN9R59RJ;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";

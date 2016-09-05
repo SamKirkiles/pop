@@ -89,7 +89,6 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
         //
         self.products = response.products
         for product in self.products{
-            print(product.localizedTitle, product.localizedDescription)
         }
 
     }
