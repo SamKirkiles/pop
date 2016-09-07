@@ -130,9 +130,7 @@
 		84BB671A1D61523E00922420 /* MessagesExtension */ = {
 			isa = PBXGroup;
 			children = (
-				84BE46881D7D91AA00E22770 /* MessagesExtension.entitlements */,
 				84BB671D1D61523E00922420 /* MainInterface.storyboard */,
-				846C3BF51D7637B900A4CE6F /* IAPManager.swift */,
 				84BB672F1D61541300922420 /* MainMessagesViewController.swift */,
 				84BB67311D61549500922420 /* SelectPhotoCollectionViewController.swift */,
 				84BB67351D6213B200922420 /* DrawViewController.swift */,
@@ -144,9 +142,11 @@
 				84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */,
 				84BB67331D62029700922420 /* PhotoCollectionViewCell.swift */,
 				84F2C1011D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift */,
+				846C3BF51D7637B900A4CE6F /* IAPManager.swift */,
 				84BB67201D61523E00922420 /* Assets.xcassets */,
 				84BB67221D61523E00922420 /* Info.plist */,
 				84BB672C1D6153CA00922420 /* MessagesExtension-Bridging-Header.h */,
+				84BE46881D7D91AA00E22770 /* MessagesExtension.entitlements */,
 			);
 			path = MessagesExtension;
 			sourceTree = "<group>";
