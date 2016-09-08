@@ -23,7 +23,7 @@ protocol SelectPhotoDelegate {
     func requestStyle(presentationStyle:MSMessagesAppPresentationStyle)
 }
 
-class SelectPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, SendImageDelegate, TransitionDelegate, CameraDelegate, PresentationStyleDelegate, RequestAccessDelegate{
+class SelectPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, SendImageDelegate, TransitionDelegate, CameraDelegate, PresentationStyleDelegate, RequestAccessDelegate, SelectedImageDelegate{
     
     var delegate:SelectPhotoDelegate? = nil
     
@@ -39,12 +39,12 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         
         self.photosFetchAsset = self.fetchPhotos()
         
-       if PHPhotoLibrary.authorizationStatus() == .authorized{
+        if PHPhotoLibrary.authorizationStatus() == .authorized{
             print("Authorized")
         }else{
             self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
         }
-
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -52,17 +52,16 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         // Dispose of any resources that can be recreated.
     }
     
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == RequestAccessSegueID{
             let requestController = segue.destination as! RequestAccessToPhotosViewController
             self.transitionDelegate = requestController
             requestController.delegate = self
         }
-     }
-    
+    }
     
     
     // MARK: UICollectionViewDataSource
@@ -75,7 +74,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-
+        
         guard let fetchAssetCount = self.photosFetchAsset?.count else{
             fatalError("fetchAssetCount was nil")
         }
@@ -103,13 +102,13 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }else{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCellIdentifier, for: indexPath) as! PhotoCollectionViewCell
             
-
+            
             guard let fetchAssets = self.photosFetchAsset else{
                 fatalError("fetched assets was nil!!")
             }
             
             cell.imageView.image = nil
-
+            
             let asset = fetchAssets.object(at: indexPath.row-1)
             cell.asset = asset
             
@@ -156,23 +155,30 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
                 fatalError("delegate was nil for select photo controller")
             }
             delegate.requestStyle(presentationStyle: MSMessagesAppPresentationStyle.expanded)
-
+            
             let photoCell = cell as! PhotoCollectionViewCell
             
             let drawController = storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
+            drawController.sendImageDelegate = self
+            self.transitionDelegate = drawController
+            drawController.presentationStyleDelegate = self
             
             photoCell.asset?.requestFullImage(imageResults: { (newImage, info) in
                 guard let image = newImage else{
                     fatalError("newImage was nil")
                 }
                 drawController.image = image
-                drawController.sendImageDelegate = self
-                self.transitionDelegate = drawController
-                drawController.presentationStyleDelegate = self
-                self.present(drawController, animated: true, completion: {
-                    //present completed
-                })
+                drawController.verifyImage()
             })
+            
+            
+            self.present(drawController, animated: true, completion: {
+                //present completed
+                drawController.verifyImage()
+            })
+            
+            
+            
         }else{
             let cameraController = storyboard?.instantiateViewController(withIdentifier: CameraVCStoryboardID) as! CameraViewController
             cameraController.delegate = self
@@ -182,9 +188,66 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
                 fatalError("delegate was nil for select photo controller")
             }
             delegate.requestStyle(presentationStyle: MSMessagesAppPresentationStyle.expanded)
-
+            
             self.present(cameraController, animated: true, completion: {
             })
+        }
+    }
+    
+    //MARK: - SelectedImageDelegate
+    func conversationWillSelectImage() {
+        DispatchQueue.main.async {
+            if let presented = self.presentedViewController {
+                presented.dismiss(animated: false, completion: nil)
+            }else{
+                print("NOOOOPOPO")
+            }
+            let drawController = self.storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
+            drawController.sendImageDelegate = self
+            self.transitionDelegate = drawController
+            drawController.presentationStyleDelegate = self
+            self.present(drawController, animated: false, completion: {
+                //present completed
+                print("COMPLETE")
+            })
+        }
+        
+    }
+    
+    func conversationSaveError(error: Error) {
+        DispatchQueue.main.async {
+            let controller = UIAlertController(title: "Could not upload", message: error.localizedDescription, preferredStyle: .alert)
+            let button = UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+                
+            })
+            controller.addAction(button)
+            self.presentedViewController?.present(controller, animated: true, completion: nil)
+        }
+    }
+    
+    func conversationImageError() {
+        DispatchQueue.main.async {
+            
+            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo. It probably hasn't uploaded to our servers yet. Try again in a few minutes", preferredStyle: .alert)
+            let okButton = UIAlertAction(title: "Ok", style: .default) { (action) in
+                self.presentedViewController?.dismiss(animated: true, completion: nil)
+                self.delegate!.requestStyle(presentationStyle: .compact)
+            }
+            controller.addAction(okButton)
+            self.presentedViewController?.present(controller, animated: true, completion: {
+                
+            })
+        }
+    }
+    
+    func conversationDidSelectImage(image: UIImage) {
+        if self.presentedViewController is DrawViewController{
+            let controller = self.presentedViewController as! DrawViewController
+            controller.image = image
+            controller.verifyImage()
+            print("Did select")
+        }else{
+            print("presented view controller was not kind of DrawViewContrller")
         }
     }
     
@@ -276,7 +339,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     func photosAuthorized() {
         self.photosFetchAsset = fetchPhotos()
-
+        
         self.collectionView?.reloadData()
     }
     

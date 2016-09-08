@@ -15,14 +15,17 @@ protocol TransitionDelegate{
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle)
 }
 
-protocol MessageDelegate{
-    func didSelectImage(message:MSMessage, convo:MSConversation)
+protocol SelectedImageDelegate{
+    func conversationWillSelectImage()
+    func conversationDidSelectImage(image:UIImage)
+    func conversationImageError()
+    func conversationSaveError(error:Error)
 }
 
 class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate , PresentationStyleDelegate{
     
     var delegate:TransitionDelegate? = nil
-    var messageDelegate:MessageDelegate? = nil
+    var selectedImageDelegate:SelectedImageDelegate? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,9 +37,21 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         
     }
     
-    override func willBecomeActive(with conversation: MSConversation) {
+    override func didBecomeActive(with conversation: MSConversation) {
+        presentViewcontroller(for: conversation, with: presentationStyle)
+        self.checkForSelectedMessage(convo: conversation)
         
-        if let message = conversation.selectedMessage{
+    }
+    
+    override func didSelect(_ message: MSMessage, conversation: MSConversation) {
+        self.checkForSelectedMessage(convo: conversation)
+        print("Did select has been called")
+    }
+    
+    
+    
+    func checkForSelectedMessage(convo: MSConversation){
+        if let message = convo.selectedMessage{
             
             guard let url = message.url else {
                 fatalError("id was nil")
@@ -44,44 +59,59 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             
             let name = "\(url)"
             
+            guard let delegate = self.selectedImageDelegate else{
+                print("Delegate was not assigned")
+                return
+            }
+            delegate.conversationWillSelectImage()
             
             let publicDB = CKContainer.default().publicCloudDatabase
+            
             let recordID = CKRecordID(recordName: name)
-            publicDB.fetch(withRecordID: recordID) { (result, error) in
+            
+            let operation = CKFetchRecordsOperation(recordIDs: [recordID])
+            operation.qualityOfService = .userInteractive
+            operation.database = publicDB
+            operation.fetchRecordsCompletionBlock = {recordDictionary, error in
+                guard let records = recordDictionary else {
+                    print("Could not load records")
+                    delegate.conversationImageError()
+                    return
+                }
                 
-                guard let record = result else{
-                    print("error retreiving record ", error?.localizedDescription)
+                guard let record = records[recordID]else{
+                    print("Could not load record")
+                    delegate.conversationImageError()
                     return
                 }
                 
                 guard let asset = record["Image"] as? CKAsset else{
                     print("Invalid Image")
+                    delegate.conversationImageError()
                     return
                 }
                 
+                DispatchQueue.global().async {
                 do{
                     let imageData = try Data(contentsOf: asset.fileURL)
                     let image = UIImage(data: imageData)
-                    print(image)
-
+                    delegate.conversationDidSelectImage(image: image!)
                 }catch{
                     print("Error with image")
                     return
                 }
-                
-
+                }
                 
             }
+            
+            publicDB.add(operation)
             
         }else{
             print("no selected message")
         }
-
-        
-        presentViewcontroller(for: conversation, with: presentationStyle)
         
     }
-
+    
     private func presentViewcontroller(for conversation: MSConversation, with presentationStyle: MSMessagesAppPresentationStyle){
         guard let controller: SelectPhotoCollectionViewController = storyboard?.instantiateViewController(withIdentifier: SelectPhotoCollectionViewIdentifier) as? SelectPhotoCollectionViewController else{
             fatalError("Unable to instantiate a SelectPhotoCollectionViewController")
@@ -89,6 +119,7 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         
         controller.delegate = self
         self.delegate = controller
+        self.selectedImageDelegate = controller
         controller.presentationStyleDelegate = self
         
         for child in childViewControllers{
@@ -112,14 +143,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     }
     
     
-    
-    override func didSelect(_ message: MSMessage, conversation: MSConversation) {
-        if let delegate = self.messageDelegate{
-            delegate.didSelectImage(message: message, convo: conversation)
-        }
-        
-        print("did select message")
-    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -160,10 +183,15 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         let message = MSMessage()
         message.layout = layout
         
-        message.url = URL(string: uploadToCloud(image: photo))
+        let code = uploadToCloud(image: photo)
+        
+        let url = URL(string: code)
+        
+        message.url = url
         
         self.activeConversation?.insert(message, completionHandler: { (error) in
             print(error?.localizedDescription)
+            self.requestPresentationStyle(.compact)
         })
         
     }
@@ -174,7 +202,13 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         imageRecord["Image"] = CKAsset(fileURL: writeImage(image: image))
         
         publicDB.save(imageRecord) { (record, error) in
-            print(error?.localizedDescription)
+            if error != nil{
+                if let delegate = self.selectedImageDelegate {
+                    delegate.conversationSaveError(error: error!)
+                }else {
+                    print("could not access delegate")
+                }
+            }
         }
         
         return imageRecord.recordID.recordName
@@ -188,6 +222,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         }
         return fileURL
     }
-
+    
 }
 

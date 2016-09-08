@@ -9,6 +9,7 @@
 import UIKit
 import Messages
 
+
 let DrawViewControllerSegueID = "DrawVCSegueID"
 let DrawViewControllerStoryboardID = "DrawViewControllerID"
 
@@ -52,6 +53,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     //Properties
     var image:UIImage?
     
+    @IBOutlet weak var loadingImageView: UIImageView!
     
     //Buttons
     @IBOutlet weak var colorPickerButton: UIButton!
@@ -65,13 +67,42 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     override func viewWillAppear(_ animated: Bool) {
         self.scrollView.panGestureRecognizer.minimumNumberOfTouches = 2
         self.scrollView.delaysContentTouches = false
-        
-        
-        guard let image = self.image else {
-            fatalError("Image was nil on Draw View Controller")
-        }
-        self.contentView.image = image
         self.scrollDelegate = self.contentView
+        
+        self.verifyImage()
+        
+    }
+    
+    func verifyImage(){
+        if let image = self.image{
+
+            DispatchQueue.main.async {
+                self.loadingImageView.isHidden = true
+                self.contentView.image = image
+            }
+            
+            guard let delegate = self.presentationStyleDelegate else{
+                fatalError("Presenationstyle delegate was nil on drawviewcontroller")
+            }
+            
+            
+            if (self.view.frame.width >= self.view.frame.height)
+            {
+                updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:false)
+                self.updateConstraints()
+                
+            }
+            else{
+                updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:true)
+                self.updateConstraints()
+                
+            }
+        }else{
+            self.loadingImageView.rotate()
+            self.loadingImageView.isHidden = false
+            print("Loading")
+        }
+        
     }
     
     //View controller lifecycle
@@ -116,89 +147,98 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     
     func updateConstraints(){
         
-        guard let image = self.image else {
-            fatalError("Image was nil in DrawViewController when calling UpdateConstraints!")
+        DispatchQueue.main.async {
+            
+            
+            guard let image = self.image else {
+                return
+            }
+            
+            
+            // if the width is greater than the height
+            if image.size.width>image.size.height{
+                
+                if self.view.frame.height >= self.view.frame.width{
+                    self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                    self.contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                    self.contentViewRightConstraint.constant = 0
+                    self.contentViewLeftConstraint.constant = 0
+                    self.contentView.setNeedsDisplay()
+                    
+                    
+                    
+                }else{
+                    self.contentViewTopConstraint.constant = 0
+                    self.contentViewBottomConstraint.constant = 0
+                    self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    self.contentView.setNeedsDisplay()
+                    
+                }
+                //height is greater than width
+            }else if image.size.width<image.size.height{
+                //we are in portrait
+                if self.view.frame.height >= self.view.frame.width{
+                    //set top and bottom constraints to 0
+                    self.contentViewBottomConstraint.constant = 0
+                    self.contentViewTopConstraint.constant = 0
+                    //set right and left to the correct values
+                    self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    self.contentView.setNeedsDisplay()
+                }else{
+                    self.contentViewBottomConstraint.constant = 0
+                    self.contentViewTopConstraint.constant = 0
+                    self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    self.contentView.setNeedsDisplay()
+                    
+                }
+                
+                
+            }else{
+                if self.view.frame.height >= self.view.frame.width{
+                    self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                    self.contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                    self.contentViewRightConstraint.constant = 0
+                    self.contentViewLeftConstraint.constant = 0
+                    self.contentView.setNeedsDisplay()
+                    
+                }else{
+                    self.contentViewTopConstraint.constant = 0
+                    self.contentViewBottomConstraint.constant = 0
+                    self.contentViewRightConstraint.constant = ((self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2)
+                    self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                    
+                    self.contentView.setNeedsDisplay()
+                    
+                    
+                }
+            }
+            let offsetX = max((self.scrollView.bounds.width - self.scrollView.contentSize.width) * 0.5, 0)
+            let offsetY = max((self.scrollView.bounds.height - self.scrollView.contentSize.height) * 0.5, 0)
+            self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
         }
         
-        
-        // if the width is greater than the height
-        if image.size.width>image.size.height{
-            
-            if self.view.frame.height >= self.view.frame.width{
-                contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                contentViewRightConstraint.constant = 0
-                contentViewLeftConstraint.constant = 0
-                self.contentView.setNeedsDisplay()
-                
-                
-                
-            }else{
-                contentViewTopConstraint.constant = 0
-                contentViewBottomConstraint.constant = 0
-                contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                self.contentView.setNeedsDisplay()
-                
-            }
-        }else if image.size.width<image.size.height{
-            //we are in portrait
-            if self.view.frame.height >= self.view.frame.width{
-                
-                contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                contentViewRightConstraint.constant = 0
-                contentViewLeftConstraint.constant = 0
-                self.contentView.setNeedsDisplay()
-            }else{
-                contentViewBottomConstraint.constant = 0
-                contentViewTopConstraint.constant = 0
-                contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                self.contentView.setNeedsDisplay()
-                
-            }
-            
-            
-        }else{
-            if self.view.frame.height >= self.view.frame.width{
-                contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                contentViewRightConstraint.constant = 0
-                contentViewLeftConstraint.constant = 0
-                self.contentView.setNeedsDisplay()
-                
-            }else{
-                contentViewTopConstraint.constant = 0
-                contentViewBottomConstraint.constant = 0
-                contentViewRightConstraint.constant = ((self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2)
-                contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                
-                self.contentView.setNeedsDisplay()
-                
-                
-            }
-        }
-        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
-        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
-        self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
         
     }
     
     func updateButtonConstraints(presentationStyle: MSMessagesAppPresentationStyle, portrait: Bool){
-        print(portrait)
-        if presentationStyle == .compact{
-            self.closeButtonTopConstraint.constant = 0
-            self.sendButtonTopConstraint.constant = 0
-            scrollViewTopConstraint.constant = 0
-        }else if portrait == false{
-            self.closeButtonTopConstraint.constant = 80
-            self.sendButtonTopConstraint.constant = 80
-            scrollViewTopConstraint.constant = 65
-        }else{
-            self.closeButtonTopConstraint.constant = 80
-            self.sendButtonTopConstraint.constant = 80
-            scrollViewTopConstraint.constant =  86
+        DispatchQueue.main.async {
+            
+            if presentationStyle == .compact{
+                self.closeButtonTopConstraint.constant = 0
+                self.sendButtonTopConstraint.constant = 0
+                self.scrollViewTopConstraint.constant = 0
+            }else if portrait == false{
+                self.closeButtonTopConstraint.constant = 80
+                self.sendButtonTopConstraint.constant = 80
+                self.scrollViewTopConstraint.constant = 65
+            }else{
+                self.closeButtonTopConstraint.constant = 80
+                self.sendButtonTopConstraint.constant = 80
+                self.scrollViewTopConstraint.constant =  86
+            }
         }
     }
     
@@ -209,10 +249,9 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             fatalError("Tried to send image but class did not have a send image delegate")
         }
         
-        sendDelegate.requestStyle(style: .compact)
         
         self.dismiss(animated: true, completion: {
-            //completion
+            sendDelegate.requestStyle(style: .compact)
         })
     }
     
@@ -231,7 +270,6 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             fatalError("Tried to send image but class did not have a send image delegate")
         }
         
-        sendDelegate.requestStyle(style: .compact)
         sendDelegate.sendImage(image: image)
     }
     
@@ -354,5 +392,18 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     func widthChagned(width: CGFloat) {
         self.contentView.changeWidth(width: width)
     }
+    
+}
+
+extension UIView{
+    func rotate() {
+        let rotation : CABasicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotation.toValue = Double(M_PI * 2)
+        rotation.duration = 2
+        rotation.isCumulative = true
+        rotation.repeatCount = FLT_MAX
+        self.layer.add(rotation, forKey: "rotationAnimation")
+    }
+    
     
 }

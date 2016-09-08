@@ -116,6 +116,9 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
         if indexPath.row > self.colorDivider{
             if UserDefaults.standard.bool(forKey: "com.skirkiles.pop.fullpalate") == true{
                 delegate.colorChanged(color: colors[indexPath.row].cgColor)
+                self.dismiss(animated: true, completion: { 
+                    
+                })
             }else{
                 let alertController = UIAlertController(title: "Buy All Colors", message: "You must buy the POP Full Color Palette to use this color.", preferredStyle: .alert)
                 let purchaseAction = UIAlertAction(title: "Buy Now", style: .default, handler: { (action) in
@@ -132,11 +135,14 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
                 alertController.addAction(purchaseAction)
                 
                 self.present(alertController, animated: true, completion: {
-                    
+                    8
                 })
             }
         }else{
             delegate.colorChanged(color: colors[indexPath.row].cgColor)
+            self.dismiss(animated: true, completion: { 
+                
+            })
         }
     }
     

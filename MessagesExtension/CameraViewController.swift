@@ -52,9 +52,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: {(granted) in
                 if granted == true{
                     self.setupCamera()
-                }             })
+                }
+            })
             
-        }    }
+        }
+    }
     
     override func viewDidLoad() {
         self.stillImageView.isHidden = true
@@ -62,8 +64,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         self.snapPhotoButton.isHidden = false
         self.saveButton.isHidden = true
         
-        self.setupCamera()
-
+        if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == .authorized{
+            self.setupCamera()
+        }
     }
     
     func setupCamera(){
@@ -85,7 +88,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         self.captureSession?.addOutput(stillImageOutput)
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
         previewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
         previewLayer?.frame = self.view.bounds
         self.view.layer.insertSublayer(previewLayer!, below: stillImageView.layer)
@@ -152,8 +154,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             
             let settings = AVCapturePhotoSettings()
             
-            
-            
             stillImageOutput?.capturePhoto(with: settings, delegate: self)
         }
     }
@@ -183,7 +183,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         let alertController = UIAlertController(title: "Save to camera roll?", message: nil, preferredStyle: UIAlertControllerStyle.alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {(action) in
-            //cancel
+
         })
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in

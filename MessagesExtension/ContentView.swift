@@ -127,14 +127,15 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
     
     override func draw(_ rect: CGRect) {
         
-        self.layer.drawsAsynchronously = true
         
         guard let image = self.image else {
-            fatalError("Content view did not have valid image assigned!")
+            return
         }
         
         image.draw(in: rect)
         
+        self.layer.drawsAsynchronously = true
+
         guard let context = UIGraphicsGetCurrentContext() else{
             fatalError("context returned nil!")
         }
