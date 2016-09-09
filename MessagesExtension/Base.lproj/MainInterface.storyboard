@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11198.2" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -144,7 +144,7 @@
         <scene sceneID="thq-cX-Zi1">
             <objects>
                 <collectionViewController storyboardIdentifier="SelectPhotoID" id="kF3-Ga-Uvu" customClass="SelectPhotoCollectionViewController" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="p5V-cP-VBY">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="p5V-cP-VBY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -343,7 +343,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1469" y="921"/>
+            <point key="canvasLocation" x="1210" y="1032"/>
         </scene>
         <!--Draw View Controller-->
         <scene sceneID="he6-c7-zJQ">
@@ -489,6 +489,7 @@
                         <outlet property="scrollView" destination="1ha-8C-Oc8" id="PVq-wu-QtO"/>
                         <outlet property="scrollViewBase" destination="gbt-B1-nbU" id="SPr-7X-QXG"/>
                         <outlet property="scrollViewTopConstraint" destination="Gvq-pk-2R5" id="8Cu-Ld-nyZ"/>
+                        <outlet property="sendButton" destination="Prn-X3-x6h" id="noe-WW-qYB"/>
                         <outlet property="sendButtonTopConstraint" destination="5P4-4L-Uk0" id="AAX-V0-dhR"/>
                         <outlet property="undoButton" destination="HnV-4L-15K" id="l5W-lV-pQk"/>
                         <segue destination="Voh-qI-KA9" kind="presentation" identifier="SettingsSegue" modalPresentationStyle="overCurrentContext" id="Y4G-WA-rQP"/>

@@ -20,6 +20,8 @@ protocol SelectedImageDelegate{
     func conversationDidSelectImage(image:UIImage)
     func conversationImageError()
     func conversationSaveError(error:Error)
+    func conversationBeganSaving()
+    func conversationEndedSaving()
 }
 
 class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate , PresentationStyleDelegate{
@@ -183,35 +185,36 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         let message = MSMessage()
         message.layout = layout
         
-        let code = uploadToCloud(image: photo)
-        
-        let url = URL(string: code)
-        
-        message.url = url
-        
-        self.activeConversation?.insert(message, completionHandler: { (error) in
-            print(error?.localizedDescription)
-            self.requestPresentationStyle(.compact)
-        })
-        
-    }
-    
-    func uploadToCloud(image:UIImage) -> String{
         let publicDB = CKContainer.default().publicCloudDatabase
         let imageRecord = CKRecord(recordType: "Pictures")
-        imageRecord["Image"] = CKAsset(fileURL: writeImage(image: image))
+        imageRecord["Image"] = CKAsset(fileURL: writeImage(image: photo))
+        let code = imageRecord.recordID.recordName
+        guard let delegate = self.selectedImageDelegate else{
+            fatalError("Could not access delegate")
+        }
+        delegate.conversationBeganSaving()
         
         publicDB.save(imageRecord) { (record, error) in
             if error != nil{
-                if let delegate = self.selectedImageDelegate {
                     delegate.conversationSaveError(error: error!)
-                }else {
-                    print("could not access delegate")
-                }
+                    delegate.conversationEndedSaving()
+                    return
+            }else{
+                let url = URL(string: code)
+                
+                message.url = url
+                delegate.conversationEndedSaving()
+
+                self.activeConversation?.insert(message, completionHandler: { (error) in
+                    print(error?.localizedDescription)
+                    self.requestPresentationStyle(.compact)
+                })
+
             }
         }
+
         
-        return imageRecord.recordID.recordName
+        
     }
     
     func writeImage(image:UIImage) -> URL{

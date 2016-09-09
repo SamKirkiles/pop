@@ -59,6 +59,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var colorPickerButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var undoButton: UIButton!
+    @IBOutlet weak var sendButton: UIButton!
     
     //Misc
     

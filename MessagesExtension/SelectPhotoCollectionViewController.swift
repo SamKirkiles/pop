@@ -33,6 +33,11 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     var photosFetchAsset:PHFetchResult<PHAsset>?
     
     
+    override func viewDidAppear(_ animated: Bool) {
+        print(self.collectionView?.frame)
+    }
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -225,6 +230,27 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }
     }
     
+    func conversationBeganSaving() {
+        DispatchQueue.main.async {
+            if self.presentedViewController is DrawViewController{
+                let controller = self.presentedViewController as! DrawViewController
+                controller.loadingImageView.isHidden = false
+                controller.loadingImageView.rotate()
+                controller.sendButton.isEnabled = false
+            }
+        }
+    }
+    func conversationEndedSaving() {
+        DispatchQueue.main.async {
+            if self.presentedViewController is DrawViewController{
+                let controller = self.presentedViewController as! DrawViewController
+                controller.loadingImageView.isHidden = true
+                controller.sendButton.isEnabled = true
+            }
+        }
+        
+    }
+    
     func conversationImageError() {
         DispatchQueue.main.async {
             
@@ -316,7 +342,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }else{
             print("transition delegate was nil on SelectPhotoViewController but continuing anywayas..")
         }
-        
+                
     }
     
     //MARK: Presentation Style

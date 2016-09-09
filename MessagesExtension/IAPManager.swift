@@ -67,7 +67,14 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
                 print("Deferred")
 
             case.failed:
-                print("Failed")
+                print(transaction.error?.localizedDescription)
+                /*let controller = UIAlertController(title: "Error", message: transaction.error?.localizedDescription, preferredStyle: .alert)
+                let button = UIAlertAction(title: "Accept", style: .default, handler: { (action) in
+                    
+                })
+                controller.addAction(button)*/
+                
+                
                 SKPaymentQueue.default().finishTransaction(transaction)
 
             case.purchased:
