@@ -193,7 +193,11 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             fatalError("Could not access delegate")
         }
         delegate.conversationBeganSaving()
-        
+        self.activeConversation?.insert(message, completionHandler: { (error) in
+            print(error?.localizedDescription)
+            self.requestPresentationStyle(.compact)
+        })
+
         publicDB.save(imageRecord) { (record, error) in
             if error != nil{
                     delegate.conversationSaveError(error: error!)

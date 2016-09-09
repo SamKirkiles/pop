@@ -112,7 +112,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
         
-        guard let delegate = self.presentationStyleDelegate else{
+        /*guard let delegate = self.presentationStyleDelegate else{
             fatalError("Presenationstyle delegate was nil on drawviewcontroller")
         }
         if self.view.frame.width >= self.view.frame.height{
@@ -121,7 +121,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }else{
             updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:true)
             
-        }
+        }*/
         
         self.contentView.zoomDelegate = self
         
@@ -160,15 +160,20 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             if image.size.width>image.size.height{
                 
                 if self.view.frame.height >= self.view.frame.width{
-                    self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                    self.contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
-                    self.contentViewRightConstraint.constant = 0
-                    self.contentViewLeftConstraint.constant = 0
-                    self.contentView.setNeedsDisplay()
-                    
-                    
-                    
+                    if image.size.width/image.size.height > self.scrollView.bounds.width/self.scrollView.bounds.height{
+                        self.contentViewRightConstraint.constant = 0
+                        self.contentViewLeftConstraint.constant = 0
+                        self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                        self.contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                    }else{
+                        self.contentViewBottomConstraint.constant = 0
+                        self.contentViewTopConstraint.constant = 0
+                        self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                        self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                        self.contentView.setNeedsDisplay()
+                    }
                 }else{
+                    //WHEN WE ARE IN LANDCAPE WITH A BAD IAMGE
                     self.contentViewTopConstraint.constant = 0
                     self.contentViewBottomConstraint.constant = 0
                     self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
@@ -176,18 +181,22 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                     self.contentView.setNeedsDisplay()
                     
                 }
-                //height is greater than width
             }else if image.size.width<image.size.height{
-                //we are in portrait
                 if self.view.frame.height >= self.view.frame.width{
-                    //set top and bottom constraints to 0
-                    self.contentViewBottomConstraint.constant = 0
-                    self.contentViewTopConstraint.constant = 0
-                    //set right and left to the correct values
-                    self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                    self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
-                    self.contentView.setNeedsDisplay()
+                    if image.size.width/image.size.height > self.scrollView.bounds.width/self.scrollView.bounds.height{
+                        self.contentViewRightConstraint.constant = 0
+                        self.contentViewLeftConstraint.constant = 0
+                        self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                        self.contentViewBottomConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
+                    }else{
+                        self.contentViewBottomConstraint.constant = 0
+                        self.contentViewTopConstraint.constant = 0
+                        self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                        self.contentViewLeftConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
+                        self.contentView.setNeedsDisplay()
+                    }
                 }else{
+                    // WHEN WE ARE IN PORTRAIT WITH A BAD IMAGE MAYBE PUT THIS IN UPDATE 2?
                     self.contentViewBottomConstraint.constant = 0
                     self.contentViewTopConstraint.constant = 0
                     self.contentViewRightConstraint.constant = (self.scrollView.bounds.width - (self.scrollView.bounds.height * image.size.width)/image.size.height)/2
@@ -195,8 +204,12 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                     self.contentView.setNeedsDisplay()
                     
                 }
+                print(image.size)
+                print(self.contentView.frame.size)
                 
                 
+                print()
+                print()
             }else{
                 if self.view.frame.height >= self.view.frame.width{
                     self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
