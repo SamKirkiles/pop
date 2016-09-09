@@ -271,6 +271,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             let controller = self.presentedViewController as! DrawViewController
             controller.image = image
             controller.verifyImage()
+            controller.contentView.isUserInteractionEnabled = false
             print("Did select")
         }else{
             print("presented view controller was not kind of DrawViewContrller")

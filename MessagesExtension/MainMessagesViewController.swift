@@ -93,17 +93,17 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
                     return
                 }
                 
-                DispatchQueue.global().async {
-                do{
-                    let imageData = try Data(contentsOf: asset.fileURL)
-                    let image = UIImage(data: imageData)
-                    delegate.conversationDidSelectImage(image: image!)
-                }catch{
-                    print("Error with image")
-                    return
+                DispatchQueue.main.async {
+                    do{
+                        let imageData = try Data(contentsOf: asset.fileURL)
+                        let image = UIImage(data: imageData)
+                        delegate.conversationDidSelectImage(image: image!)
+                    }catch{
+                        print("Error with image")
+                        return
+                    }
                 }
-                }
-                
+                                
             }
             
             publicDB.add(operation)
@@ -193,10 +193,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             fatalError("Could not access delegate")
         }
         delegate.conversationBeganSaving()
-        self.activeConversation?.insert(message, completionHandler: { (error) in
-            print(error?.localizedDescription)
-            self.requestPresentationStyle(.compact)
-        })
 
         publicDB.save(imageRecord) { (record, error) in
             if error != nil{

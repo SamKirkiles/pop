@@ -60,6 +60,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var undoButton: UIButton!
     @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var editButton: UIButton!
     
     //Misc
     
@@ -80,6 +81,8 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             DispatchQueue.main.async {
                 self.loadingImageView.isHidden = true
                 self.contentView.image = image
+                self.contentView.isUserInteractionEnabled = true
+                self.contentView.setNeedsDisplay()
             }
             
             guard let delegate = self.presentationStyleDelegate else{
@@ -112,16 +115,20 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
         
-        /*guard let delegate = self.presentationStyleDelegate else{
+        guard let delegate = self.presentationStyleDelegate else{
             fatalError("Presenationstyle delegate was nil on drawviewcontroller")
         }
+        
+        
         if self.view.frame.width >= self.view.frame.height{
             updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:false)
             
         }else{
             updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:true)
             
-        }*/
+        }
+        
+        self.updateButtonVisibility(presentationStyle: delegate.getPresentationStyle())
         
         self.contentView.zoomDelegate = self
         
@@ -256,7 +263,32 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }
     }
     
+    
+    func updateButtonVisibility(presentationStyle: MSMessagesAppPresentationStyle){
+        if presentationStyle == .compact{
+            self.contentView.isUserInteractionEnabled = false
+            self.colorPickerButton.isHidden = true
+            self.buttonOutline.isHidden = true
+            self.undoButton.isHidden = true
+            self.editButton.isHidden = false
+        }else{
+            self.contentView.isUserInteractionEnabled = true
+            self.colorPickerButton.isHidden = false
+            self.buttonOutline.isHidden = false
+            self.undoButton.isHidden = false
+            self.editButton.isHidden = true
+        }
+    }
+    
+
+    
     //MARK: UIButtons
+    @IBAction func editPressed(_ sender: AnyObject) {
+        guard let sendDelegate = self.sendImageDelegate else {
+            fatalError("Tried to send image but class did not have a send image delegate")
+        }
+        sendDelegate.requestStyle(style: .expanded)
+    }
     
     @IBAction func closePressed(_ sender: AnyObject) {
         guard let sendDelegate = self.sendImageDelegate else {
@@ -371,7 +403,6 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         return zooming
     }
     
-    
     //MARK: Transition Delegate
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
@@ -383,17 +414,8 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             
         }
         
-        if presentationStyle == .compact{
-            self.contentView.isUserInteractionEnabled = false
-            self.colorPickerButton.isHidden = true
-            self.buttonOutline.isHidden = true
-            self.undoButton.isHidden = true
-        }else{
-            self.contentView.isUserInteractionEnabled = true
-            self.colorPickerButton.isHidden = false
-            self.buttonOutline.isHidden = false
-            self.undoButton.isHidden = false
-        }
+        updateButtonVisibility(presentationStyle: presentationStyle)
+        
         
     }
     

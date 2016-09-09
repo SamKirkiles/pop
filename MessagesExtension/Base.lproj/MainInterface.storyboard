@@ -452,6 +452,16 @@
                                     <constraint firstAttribute="width" constant="75" id="pn3-Yn-Dvu"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2wH-eQ-fgm">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="YZf-MA-W0N"/>
+                                    <constraint firstAttribute="width" constant="40" id="pyF-RR-msM"/>
+                                </constraints>
+                                <state key="normal" image="edit"/>
+                                <connections>
+                                    <action selector="editPressed:" destination="pUK-h9-skb" eventType="touchUpInside" id="mjT-3j-S0J"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.24232716400000001" green="0.3505379314" blue="0.46425339370000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -466,11 +476,13 @@
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" constant="86" id="Gvq-pk-2R5"/>
                             <constraint firstItem="iZt-sJ-HM3" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leadingMargin" constant="-5" id="K5S-8c-OAW"/>
                             <constraint firstItem="CRH-3v-gy4" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="OGk-Kf-um1"/>
+                            <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="2wH-eQ-fgm" secondAttribute="bottom" constant="77" id="Vcj-K9-vIm"/>
                             <constraint firstAttribute="trailing" secondItem="1ha-8C-Oc8" secondAttribute="trailing" id="aqy-nl-vjF"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="bottom" constant="45" id="b4g-ry-DTQ"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="HnV-4L-15K" secondAttribute="bottom" constant="77" id="e1X-5S-fKV"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="ese-BQ-vqt" secondAttribute="bottom" constant="77" id="jYl-PA-fSj"/>
                             <constraint firstItem="ofE-w7-gmQ" firstAttribute="centerY" secondItem="rO7-at-i6K" secondAttribute="centerY" id="olg-8g-xLf"/>
+                            <constraint firstAttribute="trailing" secondItem="2wH-eQ-fgm" secondAttribute="trailing" constant="11" id="upB-Ji-r3r"/>
                             <constraint firstItem="HnV-4L-15K" firstAttribute="trailing" secondItem="rO7-at-i6K" secondAttribute="trailingMargin" constant="5" id="ypJ-dP-TGg"/>
                             <constraint firstItem="iZt-sJ-HM3" firstAttribute="top" secondItem="1kZ-cr-icb" secondAttribute="bottom" id="yt9-qP-rPn"/>
                         </constraints>
@@ -484,6 +496,7 @@
                         <outlet property="contentViewLeftConstraint" destination="woC-lD-Hk5" id="wZ7-Ec-yCs"/>
                         <outlet property="contentViewRightConstraint" destination="c8V-w2-Joo" id="TBr-Fz-evm"/>
                         <outlet property="contentViewTopConstraint" destination="PvJ-wf-ZfT" id="V41-DI-xWu"/>
+                        <outlet property="editButton" destination="2wH-eQ-fgm" id="v2L-9a-Wcr"/>
                         <outlet property="loadingImageView" destination="ofE-w7-gmQ" id="FgX-mG-i9F"/>
                         <outlet property="saveButton" destination="ese-BQ-vqt" id="uKW-NB-HqV"/>
                         <outlet property="scrollView" destination="1ha-8C-Oc8" id="PVq-wu-QtO"/>
@@ -693,6 +706,7 @@
         <image name="camera" width="400" height="400"/>
         <image name="check" width="200" height="200"/>
         <image name="close" width="200" height="200"/>
+        <image name="edit" width="200" height="200"/>
         <image name="goldring" width="200" height="200"/>
         <image name="loading" width="200" height="200"/>
         <image name="lock" width="300" height="300"/>
