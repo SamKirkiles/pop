@@ -34,7 +34,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     
     override func viewDidAppear(_ animated: Bool) {
-        print(self.collectionView?.frame)
     }
     
     
@@ -45,7 +44,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         self.photosFetchAsset = self.fetchPhotos()
         
         if PHPhotoLibrary.authorizationStatus() == .authorized{
-            print("Authorized")
         }else{
             self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
         }
@@ -120,7 +118,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             DispatchQueue.global().async {
                 asset.requestThumbnailImage(imageResults: {newImage,info in
                     guard let image = newImage else{
-                        print(info)
                         return
                     }
                     DispatchQueue.main.async {
@@ -205,7 +202,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             if let presented = self.presentedViewController {
                 presented.dismiss(animated: false, completion: nil)
             }else{
-                print("NOOOOPOPO")
             }
             let drawController = self.storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
             drawController.sendImageDelegate = self
@@ -213,7 +209,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             drawController.presentationStyleDelegate = self
             self.present(drawController, animated: false, completion: {
                 //present completed
-                print("COMPLETE")
             })
         }
         
@@ -273,9 +268,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             controller.image = image
             controller.verifyImage()
             controller.contentView.isUserInteractionEnabled = false
-            print("Did select")
         }else{
-            print("presented view controller was not kind of DrawViewContrller")
         }
     }
     
@@ -342,7 +335,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         if let delegate = self.transitionDelegate{
             delegate.didTransition(presentationStyle: presentationStyle)
         }else{
-            print("transition delegate was nil on SelectPhotoViewController but continuing anywayas..")
         }
                 
     }

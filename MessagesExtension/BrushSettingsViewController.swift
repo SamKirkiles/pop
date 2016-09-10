@@ -108,7 +108,6 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        print("This is the bool: ", UserDefaults.standard.bool(forKey: "com.skirkiles.pop.fullpalate"))
         
         guard let delegate = self.delegate else{
             fatalError("delegate was nil for BrushSettingsViewController")

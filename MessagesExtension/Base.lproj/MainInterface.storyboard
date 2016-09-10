@@ -144,7 +144,7 @@
         <scene sceneID="thq-cX-Zi1">
             <objects>
                 <collectionViewController storyboardIdentifier="SelectPhotoID" id="kF3-Ga-Uvu" customClass="SelectPhotoCollectionViewController" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="p5V-cP-VBY">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="p5V-cP-VBY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -189,7 +189,7 @@
                                 <size key="customSize" width="100" height="100"/>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="Q5P-Um-v3y" customClass="PhotoCollectionViewCell" customModule="MessagesExtension" customModuleProvider="target">
-                                <rect key="frame" x="137.5" y="84" width="100" height="100"/>
+                                <rect key="frame" x="138" y="84" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>

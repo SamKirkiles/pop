@@ -47,7 +47,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     
     override func didSelect(_ message: MSMessage, conversation: MSConversation) {
         self.checkForSelectedMessage(convo: conversation)
-        print("Did select has been called")
     }
     
     
@@ -62,7 +61,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             let name = "\(url)"
             
             guard let delegate = self.selectedImageDelegate else{
-                print("Delegate was not assigned")
                 return
             }
             delegate.conversationWillSelectImage()
@@ -76,19 +74,16 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             operation.database = publicDB
             operation.fetchRecordsCompletionBlock = {recordDictionary, error in
                 guard let records = recordDictionary else {
-                    print("Could not load records")
                     delegate.conversationImageError()
                     return
                 }
                 
                 guard let record = records[recordID]else{
-                    print("Could not load record")
                     delegate.conversationImageError()
                     return
                 }
                 
                 guard let asset = record["Image"] as? CKAsset else{
-                    print("Invalid Image")
                     delegate.conversationImageError()
                     return
                 }
@@ -99,7 +94,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
                         let image = UIImage(data: imageData)
                         delegate.conversationDidSelectImage(image: image!)
                     }catch{
-                        print("Error with image")
                         return
                     }
                 }
@@ -109,7 +103,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             publicDB.add(operation)
             
         }else{
-            print("no selected message")
         }
         
     }
@@ -207,7 +200,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
                 delegate.conversationEndedSaving()
 
                 self.activeConversation?.insert(message, completionHandler: { (error) in
-                    print(error?.localizedDescription)
                     self.requestPresentationStyle(.compact)
                 })
 

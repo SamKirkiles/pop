@@ -138,7 +138,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             
         }
         else {
-            print("Error capturing photo: \(error)")
             return
         }
         
@@ -169,7 +168,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     }
     
     @IBAction func closeButtonPressed(_ sender: AnyObject) {
-        print("Close")
         stillImageView.isHidden = true
         closeButton.isHidden = true
         snapPhotoButton.isHidden = false
@@ -206,7 +204,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         if let delegate = self.transitionDelegate{
             delegate.didTransition(presentationStyle: presentationStyle)
         }else{
-            print("transition delegate was nil on SelectPhotoViewController but continuing anywayas..")
         }
         
         if presentationStyle == .expanded{

@@ -61,13 +61,13 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
 
             switch transaction.transactionState{
             case.purchasing:
-                print("Purchasing")
+                print("purchasing")
 
             case.deferred:
-                print("Deferred")
+                print("deferred")
+
 
             case.failed:
-                print(transaction.error?.localizedDescription)
                 /*let controller = UIAlertController(title: "Error", message: transaction.error?.localizedDescription, preferredStyle: .alert)
                 let button = UIAlertAction(title: "Accept", style: .default, handler: { (action) in
                     
@@ -78,11 +78,9 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
                 SKPaymentQueue.default().finishTransaction(transaction)
 
             case.purchased:
-                print("Purchased", transaction.payment.productIdentifier)
                 unlockPurchasedFunctionalityForProductIdentifier(productIdentifier: transaction.payment.productIdentifier)
                 SKPaymentQueue.default().finishTransaction(transaction)
             case.restored:
-                print("Restored")
                 unlockPurchasedFunctionalityForProductIdentifier(productIdentifier: transaction.payment.productIdentifier)
                 SKPaymentQueue.default().finishTransaction(transaction)
                 

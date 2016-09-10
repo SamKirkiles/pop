@@ -104,7 +104,6 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         }else{
             self.loadingImageView.rotate()
             self.loadingImageView.isHidden = false
-            print("Loading")
         }
         
     }
@@ -162,7 +161,6 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                 return
             }
             
-            
             // if the width is greater than the height
             if image.size.width>image.size.height{
                 
@@ -211,12 +209,6 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                     self.contentView.setNeedsDisplay()
                     
                 }
-                print(image.size)
-                print(self.contentView.frame.size)
-                
-                
-                print()
-                print()
             }else{
                 if self.view.frame.height >= self.view.frame.width{
                     self.contentViewTopConstraint.constant = (self.scrollView.bounds.height - (self.scrollView.bounds.width * image.size.height)/image.size.width)/2
