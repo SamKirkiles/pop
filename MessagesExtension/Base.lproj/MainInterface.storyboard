@@ -144,7 +144,7 @@
         <scene sceneID="thq-cX-Zi1">
             <objects>
                 <collectionViewController storyboardIdentifier="SelectPhotoID" id="kF3-Ga-Uvu" customClass="SelectPhotoCollectionViewController" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="p5V-cP-VBY">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="p5V-cP-VBY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

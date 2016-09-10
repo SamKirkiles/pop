@@ -221,6 +221,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     func conversationSaveError(error: Error) {
         DispatchQueue.main.async {
+            print(error)
             let controller = UIAlertController(title: "Could not upload", message: error.localizedDescription, preferredStyle: .alert)
             let button = UIAlertAction(title: "Ok", style: .default, handler: { (action) in
                 

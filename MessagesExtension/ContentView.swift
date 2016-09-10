@@ -141,7 +141,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         }
         
         for line in self.savedLines{
-            context.setLineWidth(line.width)
+            context.setLineWidth(line.width * ((self.frame.width+self.frame.height)/(line.rect.width+line.rect.height)))
             context.setLineCap(.round)
             context.setStrokeColor(line.drawColor)
             self.contentScaleFactor = 2

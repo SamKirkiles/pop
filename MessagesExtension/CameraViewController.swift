@@ -40,7 +40,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     
     var outputImage:UIImage?
     
-    
     var authoirzationPresented = false
     
     override func viewDidAppear(_ animated: Bool) {
@@ -125,7 +124,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             
             var image = UIImage(data: photoData!, scale: 1.0)
             stillImageView.image = image
-            //UIImageWriteToSavedPhotosAlbum(image!, self,nil, nil)
             
             image = image?.fixOrientation()
             self.outputImage = image

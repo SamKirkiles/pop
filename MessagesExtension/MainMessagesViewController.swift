@@ -193,6 +193,7 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             fatalError("Could not access delegate")
         }
         delegate.conversationBeganSaving()
+        DispatchQueue.main.async {
 
         publicDB.save(imageRecord) { (record, error) in
             if error != nil{
@@ -211,6 +212,7 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
                 })
 
             }
+        }
         }
 
         

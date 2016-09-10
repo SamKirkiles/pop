@@ -31,7 +31,7 @@ class DrawingLayer: CALayer, ContentViewDelegate {
             ctx.beginPath()
             ctx.setStrokeColor(line.drawColor)
             ctx.setLineCap(CGLineCap.round)
-            ctx.setLineWidth(line.width)
+            ctx.setLineWidth(line.width * ((self.frame.width+self.frame.height)/(line.rect.width+line.rect.height)))
             self.contentsScale = 2
 
             //draw our line
