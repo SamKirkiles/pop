@@ -32,9 +32,10 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if SKPaymentQueue.canMakePayments(){
+        /*if SKPaymentQueue.canMakePayments(){
             IAPManager.sharedInstance.setupInAppPurchases()
-        }
+        }*/
+        
         
         
     }
@@ -67,12 +68,17 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             
             let publicDB = CKContainer.default().publicCloudDatabase
             
+//            let recordID = CKRecordID(recordName: name)
             let recordID = CKRecordID(recordName: name)
             
             let operation = CKFetchRecordsOperation(recordIDs: [recordID])
             operation.qualityOfService = .userInteractive
             operation.database = publicDB
             operation.fetchRecordsCompletionBlock = {recordDictionary, error in
+                
+                if let error = error{
+                    print( error.localizedDescription)
+                }
                 guard let records = recordDictionary else {
                     delegate.conversationImageError()
                     return

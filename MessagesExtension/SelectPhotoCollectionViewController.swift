@@ -32,6 +32,9 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     var photosFetchAsset:PHFetchResult<PHAsset>?
     
+    var settingsButton:UIButton?
+    
+    var cellSize:CGFloat = 90
     
     override func viewDidAppear(_ animated: Bool) {
     }
@@ -217,7 +220,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     func conversationSaveError(error: Error) {
         DispatchQueue.main.async {
             print(error)
-            let controller = UIAlertController(title: "Could not upload", message: error.localizedDescription, preferredStyle: .alert)
+            let controller = UIAlertController(title: "iCloud error", message: error.localizedDescription, preferredStyle: .alert)
             let button = UIAlertAction(title: "Ok", style: .default, handler: { (action) in
                 
             })
@@ -250,7 +253,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     func conversationImageError() {
         DispatchQueue.main.async {
             
-            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo. It probably hasn't uploaded to our servers yet. Try again in a few minutes", preferredStyle: .alert)
+            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo from the iCloud servers... Make sure you are logged into your iCloud account!", preferredStyle: .alert)
             let okButton = UIAlertAction(title: "Ok", style: .default) { (action) in
                 self.presentedViewController?.dismiss(animated: true, completion: nil)
                 self.delegate!.requestStyle(presentationStyle: .compact)
@@ -288,13 +291,26 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width:90,height:90);
+        
+        let cellNumber = floor(Float((self.collectionView?.frame.size.width)! - 20)/Float(cellSize))
+        let cellAmount = cellNumber * Float(cellSize)
+        
+        let remainder = (((self.collectionView?.frame.size.width)! - 20 - (10 * CGFloat(cellNumber))) - CGFloat(cellAmount))
+        
+        return CGSize(width: cellSize + (remainder / CGFloat(cellNumber)), height: cellSize + (remainder / CGFloat(cellNumber)))
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(10, 10, 10, 10)
     }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
     
     // MARK: Fetching Photos
     

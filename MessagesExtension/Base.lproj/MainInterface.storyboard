@@ -144,7 +144,7 @@
         <scene sceneID="thq-cX-Zi1">
             <objects>
                 <collectionViewController storyboardIdentifier="SelectPhotoID" id="kF3-Ga-Uvu" customClass="SelectPhotoCollectionViewController" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="p5V-cP-VBY">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="p5V-cP-VBY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -270,7 +270,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Aa4-fW-3cK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1210.4000000000001" y="228.93553223388307"/>
+            <point key="canvasLocation" x="1073" y="192"/>
         </scene>
         <!--Request Access To Photos View Controller-->
         <scene sceneID="fY5-75-xQw">
@@ -556,26 +556,6 @@
                                                     </view>
                                                     <size key="customSize" width="35" height="35"/>
                                                 </collectionViewCell>
-                                                <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="premiumColorCell" id="8Ih-ba-Gxe">
-                                                    <rect key="frame" x="45" y="3" width="35" height="35"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                        <rect key="frame" x="0.0" y="0.0" width="35" height="35"/>
-                                                        <autoresizingMask key="autoresizingMask"/>
-                                                        <subviews>
-                                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goldring" translatesAutoresizingMaskIntoConstraints="NO" id="03g-hE-r3b"/>
-                                                        </subviews>
-                                                    </view>
-                                                    <constraints>
-                                                        <constraint firstAttribute="bottom" secondItem="03g-hE-r3b" secondAttribute="bottom" constant="-2" id="8cp-8d-tpF"/>
-                                                        <constraint firstItem="03g-hE-r3b" firstAttribute="leading" secondItem="8Ih-ba-Gxe" secondAttribute="leading" constant="-3" id="9Gg-SE-gHC"/>
-                                                        <constraint firstItem="03g-hE-r3b" firstAttribute="top" secondItem="8Ih-ba-Gxe" secondAttribute="top" constant="-3" id="Fvu-cF-dVr"/>
-                                                        <constraint firstItem="03g-hE-r3b" firstAttribute="centerY" secondItem="8Ih-ba-Gxe" secondAttribute="centerY" id="Tnu-ii-hJg"/>
-                                                        <constraint firstAttribute="trailing" secondItem="03g-hE-r3b" secondAttribute="trailing" constant="-2" id="ctJ-Q7-N1m"/>
-                                                        <constraint firstItem="03g-hE-r3b" firstAttribute="centerX" secondItem="8Ih-ba-Gxe" secondAttribute="centerX" id="tm9-Os-iZO"/>
-                                                    </constraints>
-                                                    <size key="customSize" width="35" height="35"/>
-                                                </collectionViewCell>
                                             </cells>
                                             <connections>
                                                 <outlet property="dataSource" destination="Voh-qI-KA9" id="1AZ-EZ-VMD"/>
@@ -707,7 +687,6 @@
         <image name="check" width="200" height="200"/>
         <image name="close" width="200" height="200"/>
         <image name="edit" width="200" height="200"/>
-        <image name="goldring" width="200" height="200"/>
         <image name="loading" width="200" height="200"/>
         <image name="lock" width="300" height="300"/>
         <image name="pencil" width="850" height="900"/>

@@ -86,20 +86,20 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.row <= colorDivider{
+        //if indexPath.row <= colorDivider{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrushSettingsFreeCell, for: indexPath)
             cell.backgroundColor = colors[indexPath.row]
             cell.layer.cornerRadius = min(cell.frame.size.height, cell.frame.size.height) / 2.0
             return cell
             
-        }else{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrushSettingsPremiumCell, for: indexPath)
-            cell.backgroundColor = colors[indexPath.row]
-            cell.layer.masksToBounds = false
-            cell.layer.cornerRadius = min(cell.frame.size.height, cell.frame.size.height) / 2.0
-            return cell
-            
-        }
+//        }else{
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrushSettingsPremiumCell, for: indexPath)
+//            cell.backgroundColor = colors[indexPath.row]
+//            cell.layer.masksToBounds = false
+//            cell.layer.cornerRadius = min(cell.frame.size.height, cell.frame.size.height) / 2.0
+//            return cell
+//            
+//        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -112,39 +112,43 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
         guard let delegate = self.delegate else{
             fatalError("delegate was nil for BrushSettingsViewController")
         }
-        if indexPath.row > self.colorDivider{
-            if UserDefaults.standard.bool(forKey: "com.skirkiles.pop.fullpalate") == true{
-                delegate.colorChanged(color: colors[indexPath.row].cgColor)
-                self.dismiss(animated: true, completion: { 
-                    
-                })
-            }else{
-                let alertController = UIAlertController(title: "Buy All Colors", message: "You must buy the POP Full Color Palette to use this color.", preferredStyle: .alert)
-                let purchaseAction = UIAlertAction(title: "Buy Now", style: .default, handler: { (action) in
-                    if let product = IAPManager.sharedInstance.products.first{
-                        IAPManager.sharedInstance.createPaymentRequestForProduct(product: product)
-                    }
-                })
-                
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-                    //canceled
-                })
-                
-                alertController.addAction(cancelAction)
-                alertController.addAction(purchaseAction)
-                
-                self.present(alertController, animated: true, completion: {
-                    8
-                })
-            }
-        }else{
-            delegate.colorChanged(color: colors[indexPath.row].cgColor)
-            self.dismiss(animated: true, completion: { 
-                
+        delegate.colorChanged(color: colors[indexPath.row].cgColor)
+        self.dismiss(animated: true, completion: {
             })
-        }
+
+        
+//        if indexPath.row > self.colorDivider{
+//            if UserDefaults.standard.bool(forKey: "com.skirkiles.pop.fullpalate") == true{
+//                delegate.colorChanged(color: colors[indexPath.row].cgColor)
+//                self.dismiss(animated: true, completion: { 
+//                    
+//                })
+//            }else{
+//                let alertController = UIAlertController(title: "Buy All Colors", message: "You must buy the POP Full Color Palette to use this color.", preferredStyle: .alert)
+//                let purchaseAction = UIAlertAction(title: "Buy Now", style: .default, handler: { (action) in
+//                    if let product = IAPManager.sharedInstance.products.first{
+//                        IAPManager.sharedInstance.createPaymentRequestForProduct(product: product)
+//                    }
+//                })
+//                
+//                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+//                    //canceled
+//                })
+//                
+//                alertController.addAction(cancelAction)
+//                alertController.addAction(purchaseAction)
+//                
+//                self.present(alertController, animated: true, completion: {
+//                    
+//                })
+//            }
+//        }else{
+        
+          //
+       // }
     }
     
+        
 @IBAction func widthChanged(_ sender: AnyObject) {
     delegate?.widthChagned(width: CGFloat(widthSlider.value))
 }

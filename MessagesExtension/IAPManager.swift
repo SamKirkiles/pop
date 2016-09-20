@@ -24,6 +24,8 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
         SKPaymentQueue.default().add(self)
     }
     
+    
+    
     func validateProductIdentifiers(identifiers:[String]){
         let productRequest = SKProductsRequest(productIdentifiers: Set(identifiers))
         self.request = productRequest
@@ -46,7 +48,7 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
 
         
     }
-    
+        
     func restorePurchases(){
         if (SKPaymentQueue.canMakePayments()) {
             SKPaymentQueue.default().restoreCompletedTransactions()
@@ -91,7 +93,6 @@ class IAPManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObser
     
     //MARK: SKProductsRequestDelegate
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        //
         self.products = response.products
         for product in self.products{
         }
