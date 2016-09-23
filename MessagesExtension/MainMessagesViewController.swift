@@ -68,7 +68,6 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             
             let publicDB = CKContainer.default().publicCloudDatabase
             
-//            let recordID = CKRecordID(recordName: name)
             let recordID = CKRecordID(recordName: name)
             
             let operation = CKFetchRecordsOperation(recordIDs: [recordID])
@@ -193,7 +192,10 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         }
         delegate.conversationBeganSaving()
         DispatchQueue.main.async {
+        
+            
 
+        
         publicDB.save(imageRecord) { (record, error) in
             if error != nil{
                     delegate.conversationSaveError(error: error!)

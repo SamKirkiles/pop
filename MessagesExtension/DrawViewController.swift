@@ -415,6 +415,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     func colorChanged(color: CGColor) {
         self.contentView.changeColor(color: color)
         self.colorPickerButton.tintColor = UIColor(cgColor: color)
+        
     }
     
     func widthChagned(width: CGFloat) {
