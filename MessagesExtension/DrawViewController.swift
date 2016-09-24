@@ -50,10 +50,14 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var sendButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var closeButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var progressViewTopConstraint: NSLayoutConstraint!
+    
     //Properties
     var image:UIImage?
     
     @IBOutlet weak var loadingImageView: UIImageView!
+    
+    @IBOutlet weak var progressView: UIProgressView!
     
     //Buttons
     @IBOutlet weak var colorPickerButton: UIButton!
@@ -113,6 +117,8 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         super.viewDidLoad()
         
         self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
+        self.progressView.isHidden = true
+        self.progressView.transform = CGAffineTransform(scaleX: 1, y: 4)
         
         guard let delegate = self.presentationStyleDelegate else{
             fatalError("Presenationstyle delegate was nil on drawviewcontroller")
@@ -243,14 +249,18 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                 self.closeButtonTopConstraint.constant = 0
                 self.sendButtonTopConstraint.constant = 0
                 self.scrollViewTopConstraint.constant = 0
+                self.progressViewTopConstraint.constant = 0
             }else if portrait == false{
                 self.closeButtonTopConstraint.constant = 80
                 self.sendButtonTopConstraint.constant = 80
                 self.scrollViewTopConstraint.constant = 65
+                self.progressViewTopConstraint.constant = 65
             }else{
                 self.closeButtonTopConstraint.constant = 80
                 self.sendButtonTopConstraint.constant = 80
                 self.scrollViewTopConstraint.constant =  86
+                self.progressViewTopConstraint.constant = 86
+
             }
         }
     }

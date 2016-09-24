@@ -144,7 +144,7 @@
         <scene sceneID="thq-cX-Zi1">
             <objects>
                 <collectionViewController storyboardIdentifier="SelectPhotoID" id="kF3-Ga-Uvu" customClass="SelectPhotoCollectionViewController" customModule="MessagesExtension" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="p5V-cP-VBY">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="p5V-cP-VBY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -189,7 +189,7 @@
                                 <size key="customSize" width="100" height="100"/>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="Q5P-Um-v3y" customClass="PhotoCollectionViewCell" customModule="MessagesExtension" customModuleProvider="target">
-                                <rect key="frame" x="138" y="84" width="100" height="100"/>
+                                <rect key="frame" x="137.5" y="84" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
@@ -462,9 +462,13 @@
                                     <action selector="editPressed:" destination="pUK-h9-skb" eventType="touchUpInside" id="mjT-3j-S0J"/>
                                 </connections>
                             </button>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" translatesAutoresizingMaskIntoConstraints="NO" id="ySw-LU-hlC">
+                                <color key="progressTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" red="0.24232716400000001" green="0.3505379314" blue="0.46425339370000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="ySw-LU-hlC" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" id="37P-ey-LGD"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="W6m-SN-qEd" secondAttribute="bottom" constant="70" id="3wh-NF-8LG"/>
                             <constraint firstItem="Prn-X3-x6h" firstAttribute="top" secondItem="1kZ-cr-icb" secondAttribute="bottom" id="5P4-4L-Uk0"/>
                             <constraint firstItem="W6m-SN-qEd" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="5oW-7H-lV3"/>
@@ -475,11 +479,13 @@
                             <constraint firstAttribute="trailingMargin" secondItem="Prn-X3-x6h" secondAttribute="trailing" constant="-5" id="GV4-0G-Ivf"/>
                             <constraint firstItem="1ha-8C-Oc8" firstAttribute="top" secondItem="rO7-at-i6K" secondAttribute="top" constant="86" id="Gvq-pk-2R5"/>
                             <constraint firstItem="iZt-sJ-HM3" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leadingMargin" constant="-5" id="K5S-8c-OAW"/>
+                            <constraint firstItem="ySw-LU-hlC" firstAttribute="leading" secondItem="rO7-at-i6K" secondAttribute="leading" id="Nhe-df-I8d"/>
                             <constraint firstItem="CRH-3v-gy4" firstAttribute="centerX" secondItem="rO7-at-i6K" secondAttribute="centerX" id="OGk-Kf-um1"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="2wH-eQ-fgm" secondAttribute="bottom" constant="77" id="Vcj-K9-vIm"/>
                             <constraint firstAttribute="trailing" secondItem="1ha-8C-Oc8" secondAttribute="trailing" id="aqy-nl-vjF"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="1ha-8C-Oc8" secondAttribute="bottom" constant="45" id="b4g-ry-DTQ"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="HnV-4L-15K" secondAttribute="bottom" constant="77" id="e1X-5S-fKV"/>
+                            <constraint firstAttribute="trailing" secondItem="ySw-LU-hlC" secondAttribute="trailing" id="gSu-7a-M2s"/>
                             <constraint firstItem="Yr8-e1-Zb7" firstAttribute="top" secondItem="ese-BQ-vqt" secondAttribute="bottom" constant="77" id="jYl-PA-fSj"/>
                             <constraint firstItem="ofE-w7-gmQ" firstAttribute="centerY" secondItem="rO7-at-i6K" secondAttribute="centerY" id="olg-8g-xLf"/>
                             <constraint firstAttribute="trailing" secondItem="2wH-eQ-fgm" secondAttribute="trailing" constant="11" id="upB-Ji-r3r"/>
@@ -498,6 +504,8 @@
                         <outlet property="contentViewTopConstraint" destination="PvJ-wf-ZfT" id="V41-DI-xWu"/>
                         <outlet property="editButton" destination="2wH-eQ-fgm" id="v2L-9a-Wcr"/>
                         <outlet property="loadingImageView" destination="ofE-w7-gmQ" id="FgX-mG-i9F"/>
+                        <outlet property="progressView" destination="ySw-LU-hlC" id="SpZ-XU-y8m"/>
+                        <outlet property="progressViewTopConstraint" destination="37P-ey-LGD" id="eT9-jX-Cpk"/>
                         <outlet property="saveButton" destination="ese-BQ-vqt" id="uKW-NB-HqV"/>
                         <outlet property="scrollView" destination="1ha-8C-Oc8" id="PVq-wu-QtO"/>
                         <outlet property="scrollViewBase" destination="gbt-B1-nbU" id="SPr-7X-QXG"/>
@@ -510,7 +518,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3DY-U4-wl6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1924" y="129.98500749625188"/>
+            <point key="canvasLocation" x="1868" y="152"/>
         </scene>
         <!--Brush Settings View Controller-->
         <scene sceneID="hpu-pS-e07">

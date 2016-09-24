@@ -217,6 +217,16 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         
     }
     
+    func conversationProgressUpdated(progress:Double){
+        DispatchQueue.main.async {
+            if self.presentedViewController is DrawViewController{
+                let controller = self.presentedViewController as! DrawViewController
+                    print(progress)
+                controller.progressView.setProgress(Float(progress), animated: true)
+            }
+        }
+    }
+    
     func conversationSaveError(error: Error) {
         DispatchQueue.main.async {
             print(error)
@@ -233,8 +243,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         DispatchQueue.main.async {
             if self.presentedViewController is DrawViewController{
                 let controller = self.presentedViewController as! DrawViewController
-                controller.loadingImageView.isHidden = false
-                controller.loadingImageView.rotate()
+                controller.progressView.isHidden = false
                 controller.sendButton.isEnabled = false
             }
         }
@@ -243,8 +252,9 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         DispatchQueue.main.async {
             if self.presentedViewController is DrawViewController{
                 let controller = self.presentedViewController as! DrawViewController
-                controller.loadingImageView.isHidden = true
                 controller.sendButton.isEnabled = true
+                controller.progressView.isHidden = true
+                controller.progressView.setProgress(0, animated: false)
             }
         }
         
@@ -253,7 +263,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     func conversationImageError() {
         DispatchQueue.main.async {
             
-            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo from the iCloud servers... Make sure you are logged into your iCloud account!", preferredStyle: .alert)
+            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo from the iCloud servers... Make sure you are logged into iCloud and wifi is on", preferredStyle: .alert)
             let okButton = UIAlertAction(title: "Ok", style: .default) { (action) in
                 self.presentedViewController?.dismiss(animated: true, completion: nil)
                 self.delegate!.requestStyle(presentationStyle: .compact)

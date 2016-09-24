@@ -22,6 +22,7 @@ protocol SelectedImageDelegate{
     func conversationSaveError(error:Error)
     func conversationBeganSaving()
     func conversationEndedSaving()
+    func conversationProgressUpdated(progress:Double)
 }
 
 class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegate , PresentationStyleDelegate{
@@ -191,30 +192,34 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
             fatalError("Could not access delegate")
         }
         delegate.conversationBeganSaving()
-        DispatchQueue.main.async {
         
-            
-
+        let saveOperation = CKModifyRecordsOperation(recordsToSave: [imageRecord], recordIDsToDelete: nil)
         
-        publicDB.save(imageRecord) { (record, error) in
+        saveOperation.perRecordProgressBlock = {record, progress in
+            delegate.conversationProgressUpdated(progress: progress)
+        }
+        
+        saveOperation.modifyRecordsCompletionBlock = { records, deletedRecordIDs, error in
             if error != nil{
-                    delegate.conversationSaveError(error: error!)
-                    delegate.conversationEndedSaving()
-                    return
+                delegate.conversationSaveError(error: error!)
+                delegate.conversationEndedSaving()
+                return
             }else{
                 let url = URL(string: code)
                 
                 message.url = url
                 delegate.conversationEndedSaving()
-
+                
                 self.activeConversation?.insert(message, completionHandler: { (error) in
                     self.requestPresentationStyle(.compact)
                 })
-
+                
             }
         }
-        }
-
+        saveOperation.qualityOfService = .userInteractive
+        saveOperation.isAtomic = false
+        saveOperation.savePolicy = .changedKeys
+        publicDB.add(saveOperation)
         
         
     }
