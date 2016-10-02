@@ -79,7 +79,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         }catch {
             fatalError(error.localizedDescription)
         }
-        
+                
         captureSession?.addInput(deviceInput)
         
         stillImageOutput = AVCapturePhotoOutput()
@@ -89,6 +89,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
         previewLayer?.frame = self.view.bounds
+        previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
         self.view.layer.insertSublayer(previewLayer!, below: stillImageView.layer)
         
         self.captureSession?.startRunning()

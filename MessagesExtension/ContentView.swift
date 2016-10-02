@@ -135,7 +135,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         image.draw(in: rect)
         
         self.layer.drawsAsynchronously = true
-
+        
         guard let context = UIGraphicsGetCurrentContext() else{
             fatalError("context returned nil!")
         }
@@ -145,21 +145,68 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
             context.setLineCap(.round)
             context.setStrokeColor(line.drawColor)
             self.contentScaleFactor = 2
+            var count = 0
+            var previous = count - 1
+
             for segment in line.segments{
                 
-                let startx = (segment.start.x * self.frame.width)/line.rect.width
-                let starty = (segment.start.y * self.frame.height)/line.rect.height
+                var startx = (segment.start.x * self.frame.width)/line.rect.width
+                var starty = (segment.start.y * self.frame.height)/line.rect.height
                 
                 let endx = (segment.end.x * self.frame.width)/line.rect.width
                 let endy = (segment.end.y * self.frame.height)/line.rect.height
                 
-                context.move(to: CGPoint(x: startx, y: starty))
-                context.addLine(to: CGPoint(x: endx, y: endy))
+                //the end of this curve and the beginning of the next have to be the same
+                
+                count += 1
+                previous =  count - 1
+                
+                if count < line.segments.count{
+                    
+                    let nextSegment = line.segments[count]
+                    
+                    let nextstartx = (nextSegment.start.x * self.frame.width)/line.rect.width
+                    let nextstarty = (nextSegment.start.y * self.frame.height)/line.rect.height
+                    
+                    var nextendx = (nextSegment.end.x * self.frame.width)/line.rect.width
+                    var nextendy = (nextSegment.end.y * self.frame.height)/line.rect.height
+                    
+                    if previous >= 0{
+                        let previousSegment = line.segments[previous]
+                        
+                        let previousstartx = (previousSegment.start.x * self.frame.width)/line.rect.width
+                        let previousstarty = (previousSegment.start.y * self.frame.height)/line.rect.height
+                        
+                        
+                        //this is going to be the midpoint between the two tanjents
+                        
+                        startx = (previousstartx+endx)/2.0
+                        starty = (previousstarty+endy)/2.0
+                        
+                    }
+                    
+                    if count + 1 < line.segments.count{
+                        let nextlinebegin = line.segments[count + 1]
+                        
+                        
+                        let nextlinebeginendx = (nextlinebegin.start.x * self.frame.width)/line.rect.width
+                        let nextlinebeginendy = (nextlinebegin.start.y * self.frame.height)/line.rect.height
+                        nextendx = (nextstartx + nextlinebeginendx)/2
+                        nextendy = (nextstarty + nextlinebeginendy)/2
+
+                    }
+                    
+                    context.move(to: CGPoint(x: startx, y: starty))
+                    
+                    context.addCurve(to: CGPoint(x:nextendx, y:nextendy), control1: CGPoint(x: endx, y: endy), control2: CGPoint(x: nextstartx, y: nextstarty))
+
+                }
             }
-            
-            context.strokePath()
+                        context.strokePath()
         }
     }
+    
+    
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         guard let delegate = self.zoomDelegate else{

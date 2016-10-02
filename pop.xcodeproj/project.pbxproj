@@ -10,6 +10,7 @@
 		84303BB51D628E4000F0FAF5 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84303BB41D628E4000F0FAF5 /* Line.swift */; };
 		84693B5A1D62D38E005541A7 /* DrawingLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84693B591D62D38E005541A7 /* DrawingLayer.swift */; };
 		846C3BF61D7637B900A4CE6F /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846C3BF51D7637B900A4CE6F /* IAPManager.swift */; };
+		8484A00D1D9B24D400058701 /* BlankCanvasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8484A00C1D9B24D400058701 /* BlankCanvasViewController.swift */; };
 		848CBD151D83646A007C6C01 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 848CBD141D83646A007C6C01 /* CloudKit.framework */; };
 		84BB670D1D61523E00922420 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BB670C1D61523E00922420 /* Assets.xcassets */; };
 		84BB67141D61523E00922420 /* MessagesExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 84BB67131D61523E00922420 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -55,6 +56,7 @@
 		84303BB41D628E4000F0FAF5 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		84693B591D62D38E005541A7 /* DrawingLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingLayer.swift; sourceTree = "<group>"; };
 		846C3BF51D7637B900A4CE6F /* IAPManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		8484A00C1D9B24D400058701 /* BlankCanvasViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlankCanvasViewController.swift; sourceTree = "<group>"; };
 		848CBD141D83646A007C6C01 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		84BB67091D61523E00922420 /* pop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BB670C1D61523E00922420 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				84BB671D1D61523E00922420 /* MainInterface.storyboard */,
 				84BB672F1D61541300922420 /* MainMessagesViewController.swift */,
 				84BB67311D61549500922420 /* SelectPhotoCollectionViewController.swift */,
+				8484A00C1D9B24D400058701 /* BlankCanvasViewController.swift */,
 				84BB67351D6213B200922420 /* DrawViewController.swift */,
 				84BB67371D62273800922420 /* ContentView.swift */,
 				84693B591D62D38E005541A7 /* DrawingLayer.swift */,
@@ -273,6 +276,7 @@
 				84F2C1021D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift in Sources */,
 				84BB67321D61549500922420 /* SelectPhotoCollectionViewController.swift in Sources */,
 				84693B5A1D62D38E005541A7 /* DrawingLayer.swift in Sources */,
+				8484A00D1D9B24D400058701 /* BlankCanvasViewController.swift in Sources */,
 				84BB67341D62029700922420 /* PhotoCollectionViewCell.swift in Sources */,
 				84E0F1681D64DCEA00FC5863 /* CameraViewController.swift in Sources */,
 			);

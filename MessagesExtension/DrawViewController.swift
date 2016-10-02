@@ -124,7 +124,6 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             fatalError("Presenationstyle delegate was nil on drawviewcontroller")
         }
         
-        
         if self.view.frame.width >= self.view.frame.height{
             updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:false)
             

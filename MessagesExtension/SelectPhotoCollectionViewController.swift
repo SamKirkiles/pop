@@ -1,6 +1,6 @@
 //
 //  SelectPhotoCollectionViewController.swift
-//  pop
+//  POP
 //
 //  Created by Sam Kirkiles on 8/14/16.
 //  Copyright © 2016 Sam Kirkiles. All rights reserved.
@@ -16,6 +16,7 @@ let SelectPhotoCollectionViewSegue = "SelectPhotoSegue"
 let SelectPhotoCollectionViewIdentifier = "SelectPhotoID"
 
 let CameraCellReuseIdentifier = "CameraCellID"
+let BlankCanvasReuseIdentifier = "BlankCanvasID"
 let HeaderReuseId = "reuseHeader"
 
 protocol SelectPhotoDelegate {
@@ -23,7 +24,7 @@ protocol SelectPhotoDelegate {
     func requestStyle(presentationStyle:MSMessagesAppPresentationStyle)
 }
 
-class SelectPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, SendImageDelegate, TransitionDelegate, CameraDelegate, PresentationStyleDelegate, RequestAccessDelegate, SelectedImageDelegate{
+class SelectPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, SendImageDelegate, TransitionDelegate, CameraDelegate, PresentationStyleDelegate, RequestAccessDelegate, SelectedImageDelegate, BlankCanvasDelegate{
     
     var delegate:SelectPhotoDelegate? = nil
     
@@ -34,12 +35,11 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     var settingsButton:UIButton?
     
-    var cellSize:CGFloat = 90
+    var cellSize:CGFloat = 100
     
     override func viewDidAppear(_ animated: Bool) {
+        
     }
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +69,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }
     }
     
-    
     // MARK: UICollectionViewDataSource
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -85,7 +84,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             fatalError("fetchAssetCount was nil")
         }
         
-        return fetchAssetCount + 1
+        return fetchAssetCount + 2
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -105,6 +104,23 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.contentView.layer.cornerRadius).cgPath
             
             return cell
+        }else if indexPath.row == 1{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BlankCanvasReuseIdentifier, for: indexPath)
+            
+            cell.contentView.layer.masksToBounds = true
+            cell.contentView.layer.cornerRadius = 5.0
+            
+            cell.layer.masksToBounds = false
+            cell.layer.cornerRadius = 5.0
+            cell.layer.shadowOffset = CGSize(width: 3, height: 3)
+            cell.layer.shadowColor = UIColor.gray.cgColor
+            cell.layer.shadowRadius = 5.0
+            cell.layer.shadowOpacity = 1
+            cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.contentView.layer.cornerRadius).cgPath
+            
+            return cell
+
+            
         }else{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCellIdentifier, for: indexPath) as! PhotoCollectionViewCell
             
@@ -115,7 +131,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             
             cell.imageView.image = nil
             
-            let asset = fetchAssets.object(at: indexPath.row-1)
+            let asset = fetchAssets.object(at: indexPath.row-2)
             cell.asset = asset
             
             DispatchQueue.global().async {
@@ -183,8 +199,8 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             })
             
             
-            
-        }else{
+        
+        }else if indexPath.row == 0{
             let cameraController = storyboard?.instantiateViewController(withIdentifier: CameraVCStoryboardID) as! CameraViewController
             cameraController.delegate = self
             self.transitionDelegate = cameraController
@@ -195,6 +211,13 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             delegate.requestStyle(presentationStyle: MSMessagesAppPresentationStyle.expanded)
             
             self.present(cameraController, animated: true, completion: {
+            })
+        }else{
+            let blankCanvas = storyboard?.instantiateViewController(withIdentifier: BlankCanvasReuseIdentifier) as! BlankCanvasViewController
+            self.transitionDelegate = blankCanvas
+            blankCanvas.delegate = self
+            self.present(blankCanvas, animated: true, completion: {
+                //presented
             })
         }
     }
@@ -221,7 +244,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         DispatchQueue.main.async {
             if self.presentedViewController is DrawViewController{
                 let controller = self.presentedViewController as! DrawViewController
-                    print(progress)
+                print(progress)
                 controller.progressView.setProgress(Float(progress), animated: true)
             }
         }
@@ -300,12 +323,50 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         })
     }
     
+    func didChooseBlankCanvas(type: BlankCanvasType) {
+        
+        self.collectionView?.isUserInteractionEnabled = false
+        self.dismiss(animated: false, completion: {
+            
+        })
+        
+        let drawController = storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
+        
+        if type == .square{
+            drawController.image = #imageLiteral(resourceName: "Blank Canvas Square")
+        }else if type == .portrait{
+            drawController.image = #imageLiteral(resourceName: "Blank Canvas Portrait")
+        }else{
+            drawController.image = #imageLiteral(resourceName: "Blank Cavnas Landscape")
+        }
+
+        drawController.sendImageDelegate = self
+        drawController.presentationStyleDelegate = self
+        self.transitionDelegate = drawController
+        self.present(drawController, animated: false, completion: {
+            self.collectionView?.isUserInteractionEnabled = true
+            self.delegate?.requestStyle(presentationStyle: .expanded)
+        })
+
+
+        
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let cellNumber = floor(Float((self.collectionView?.frame.size.width)! - 20)/Float(cellSize))
-        let cellAmount = cellNumber * Float(cellSize)
+        //Get the number of cells that fit diagonally
+        let cellNumber = floor(Float((self.collectionView?.frame.size.width)! - 10)/Float(cellSize))
         
-        let remainder = (((self.collectionView?.frame.size.width)! - 20 - (10 * CGFloat(cellNumber))) - CGFloat(cellAmount))
+        // Get the size of all these cells combined without spacing
+        let cellCombinedSize = cellNumber * Float(cellSize)
+        
+        
+        let remainder = (((self.collectionView?.frame.size.width)! - 20 - (10
+            * CGFloat(cellNumber))) - CGFloat(cellCombinedSize))
+        
+        print((remainder / CGFloat(cellNumber)))
+        
+        print(CGSize(width: cellSize + (remainder / CGFloat(cellNumber)), height: cellSize + (remainder / CGFloat(cellNumber))))
         
         return CGSize(width: cellSize + (remainder / CGFloat(cellNumber)), height: cellSize + (remainder / CGFloat(cellNumber)))
     }
@@ -313,7 +374,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(10, 10, 10, 10)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 10
     }
@@ -362,7 +423,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             delegate.didTransition(presentationStyle: presentationStyle)
         }else{
         }
-                
+        
     }
     
     //MARK: Presentation Style

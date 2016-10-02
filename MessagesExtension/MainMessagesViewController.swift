@@ -178,6 +178,9 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     
     func sendPhoto(photo: UIImage) {
         
+        let name = "Sam Kirkiles"
+        print(name)
+        
         let layout = MSMessageTemplateLayout()
         layout.image = photo
         
