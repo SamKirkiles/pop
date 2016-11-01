@@ -33,9 +33,12 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     var photosFetchAsset:PHFetchResult<PHAsset>?
     
-    var settingsButton:UIButton?
     
     var cellSize:CGFloat = 100
+    
+    let buttonSize:CGFloat = 60
+    var settingsButton:UIButton?
+    
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -50,6 +53,9 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }else{
             self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
         }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
     }
     
@@ -119,7 +125,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.contentView.layer.cornerRadius).cgPath
             
             return cell
-
+            
             
         }else{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCellIdentifier, for: indexPath) as! PhotoCollectionViewCell
@@ -160,7 +166,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             
             
             return cell
-            
         }
     }
     
@@ -199,7 +204,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             })
             
             
-        
+            
         }else if indexPath.row == 0{
             let cameraController = storyboard?.instantiateViewController(withIdentifier: CameraVCStoryboardID) as! CameraViewController
             cameraController.delegate = self
@@ -244,7 +249,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         DispatchQueue.main.async {
             if self.presentedViewController is DrawViewController{
                 let controller = self.presentedViewController as! DrawViewController
-                print(progress)
                 controller.progressView.setProgress(Float(progress), animated: true)
             }
         }
@@ -339,7 +343,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }else{
             drawController.image = #imageLiteral(resourceName: "Blank Cavnas Landscape")
         }
-
+        
         drawController.sendImageDelegate = self
         drawController.presentationStyleDelegate = self
         self.transitionDelegate = drawController
@@ -347,9 +351,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             self.collectionView?.isUserInteractionEnabled = true
             self.delegate?.requestStyle(presentationStyle: .expanded)
         })
-
-
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -363,11 +364,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         
         let remainder = (((self.collectionView?.frame.size.width)! - 20 - (10
             * CGFloat(cellNumber))) - CGFloat(cellCombinedSize))
-        
-        print((remainder / CGFloat(cellNumber)))
-        
-        print(CGSize(width: cellSize + (remainder / CGFloat(cellNumber)), height: cellSize + (remainder / CGFloat(cellNumber))))
-        
+                
         return CGSize(width: cellSize + (remainder / CGFloat(cellNumber)), height: cellSize + (remainder / CGFloat(cellNumber)))
     }
     
@@ -419,6 +416,19 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     //MARK: Transition Delegate
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
+        
+        if presentationStyle == .compact{
+            collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            
+        }else{
+            collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+            self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+            self.collectionView?.setContentOffset(CGPoint(x: self.collectionView!.contentOffset.x, y: self.collectionView!.contentOffset.y - 86), animated: true)
+            
+        }
+        
+        
         if let delegate = self.transitionDelegate{
             delegate.didTransition(presentationStyle: presentationStyle)
         }else{

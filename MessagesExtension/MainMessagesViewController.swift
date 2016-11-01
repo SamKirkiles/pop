@@ -33,12 +33,7 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /*if SKPaymentQueue.canMakePayments(){
-            IAPManager.sharedInstance.setupInAppPurchases()
-        }*/
-        
-        
-        
+        self.view.backgroundColor = UIColor.white
     }
     
     override func didBecomeActive(with conversation: MSConversation) {
@@ -122,25 +117,11 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         self.delegate = controller
         self.selectedImageDelegate = controller
         controller.presentationStyleDelegate = self
-        
-        for child in childViewControllers{
-            child.willMove(toParentViewController: nil)
-            child.view.removeFromSuperview()
-            child.removeFromParentViewController()
+        if self.presentedViewController == nil{
+            self.present(controller, animated: false) {
+                print("Child View Controllers Count", self.childViewControllers.count)
+            }
         }
-        
-        addChildViewController(controller)
-        
-        controller.view.frame = view.bounds
-        controller.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(controller.view)
-        
-        controller.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        controller.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        controller.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        controller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
-        controller.didMove(toParentViewController: self)
     }
     
     
@@ -237,4 +218,13 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
     }
     
 }
+
+extension NSLayoutConstraint {
+    
+    override open var description: String {
+        let id = identifier ?? ""
+        return "id: \(id), constant: \(constant)" //you may print whatever you want here
+    }
+}
+
 

@@ -195,9 +195,8 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
                         nextendy = (nextstarty + nextlinebeginendy)/2
 
                     }
-                    
                     context.move(to: CGPoint(x: startx, y: starty))
-                    
+
                     context.addCurve(to: CGPoint(x:nextendx, y:nextendy), control1: CGPoint(x: endx, y: endy), control2: CGPoint(x: nextstartx, y: nextstarty))
 
                 }

@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		84303BB51D628E4000F0FAF5 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84303BB41D628E4000F0FAF5 /* Line.swift */; };
+		846060F91DA5FDA900BF7A89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 846060F81DA5FDA900BF7A89 /* AVFoundation.framework */; };
 		84693B5A1D62D38E005541A7 /* DrawingLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84693B591D62D38E005541A7 /* DrawingLayer.swift */; };
-		846C3BF61D7637B900A4CE6F /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846C3BF51D7637B900A4CE6F /* IAPManager.swift */; };
 		8484A00D1D9B24D400058701 /* BlankCanvasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8484A00C1D9B24D400058701 /* BlankCanvasViewController.swift */; };
 		848CBD151D83646A007C6C01 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 848CBD141D83646A007C6C01 /* CloudKit.framework */; };
 		84BB670D1D61523E00922420 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BB670C1D61523E00922420 /* Assets.xcassets */; };
@@ -25,6 +25,8 @@
 		84E0F1661D641C9F00FC5863 /* BrushSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */; };
 		84E0F1681D64DCEA00FC5863 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */; };
 		84E0F16A1D64EA5600FC5863 /* CoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E0F1691D64EA5600FC5863 /* CoverViewController.swift */; };
+		84E118DF1DC26878008538AB /* StoreTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E118DE1DC26877008538AB /* StoreTableViewController.swift */; };
+		84E118E11DC2B121008538AB /* StoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E118E01DC2B121008538AB /* StoreTableViewCell.swift */; };
 		84F2C1021D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2C1011D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,8 +56,8 @@
 
 /* Begin PBXFileReference section */
 		84303BB41D628E4000F0FAF5 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		846060F81DA5FDA900BF7A89 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		84693B591D62D38E005541A7 /* DrawingLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingLayer.swift; sourceTree = "<group>"; };
-		846C3BF51D7637B900A4CE6F /* IAPManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		8484A00C1D9B24D400058701 /* BlankCanvasViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlankCanvasViewController.swift; sourceTree = "<group>"; };
 		848CBD141D83646A007C6C01 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		84BB67091D61523E00922420 /* pop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pop.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,6 +78,8 @@
 		84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrushSettingsViewController.swift; sourceTree = "<group>"; };
 		84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		84E0F1691D64EA5600FC5863 /* CoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverViewController.swift; sourceTree = "<group>"; };
+		84E118DE1DC26877008538AB /* StoreTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTableViewController.swift; sourceTree = "<group>"; };
+		84E118E01DC2B121008538AB /* StoreTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTableViewCell.swift; sourceTree = "<group>"; };
 		84F2C1011D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestAccessToPhotosViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				846060F91DA5FDA900BF7A89 /* AVFoundation.framework in Frameworks */,
 				84BB67191D61523E00922420 /* Messages.framework in Frameworks */,
 				848CBD151D83646A007C6C01 /* CloudKit.framework in Frameworks */,
 			);
@@ -123,6 +128,7 @@
 		84BB67171D61523E00922420 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				846060F81DA5FDA900BF7A89 /* AVFoundation.framework */,
 				848CBD141D83646A007C6C01 /* CloudKit.framework */,
 				84BB67181D61523E00922420 /* Messages.framework */,
 			);
@@ -139,13 +145,14 @@
 				84BB67351D6213B200922420 /* DrawViewController.swift */,
 				84BB67371D62273800922420 /* ContentView.swift */,
 				84693B591D62D38E005541A7 /* DrawingLayer.swift */,
-				84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */,
 				84303BB41D628E4000F0FAF5 /* Line.swift */,
 				84E0F1691D64EA5600FC5863 /* CoverViewController.swift */,
 				84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */,
 				84BB67331D62029700922420 /* PhotoCollectionViewCell.swift */,
 				84F2C1011D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift */,
-				846C3BF51D7637B900A4CE6F /* IAPManager.swift */,
+				84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */,
+				84E118DE1DC26877008538AB /* StoreTableViewController.swift */,
+				84E118E01DC2B121008538AB /* StoreTableViewCell.swift */,
 				84BB67201D61523E00922420 /* Assets.xcassets */,
 				84BB67221D61523E00922420 /* Info.plist */,
 				84BB672C1D6153CA00922420 /* MessagesExtension-Bridging-Header.h */,
@@ -266,11 +273,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				846C3BF61D7637B900A4CE6F /* IAPManager.swift in Sources */,
 				84E0F1661D641C9F00FC5863 /* BrushSettingsViewController.swift in Sources */,
 				84BB67361D6213B200922420 /* DrawViewController.swift in Sources */,
 				84E0F16A1D64EA5600FC5863 /* CoverViewController.swift in Sources */,
+				84E118DF1DC26878008538AB /* StoreTableViewController.swift in Sources */,
 				84BB67381D62273800922420 /* ContentView.swift in Sources */,
+				84E118E11DC2B121008538AB /* StoreTableViewCell.swift in Sources */,
 				84BB67301D61541300922420 /* MainMessagesViewController.swift in Sources */,
 				84303BB51D628E4000F0FAF5 /* Line.swift in Sources */,
 				84F2C1021D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift in Sources */,
@@ -404,6 +412,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MessagesExtension/MessagesExtension.entitlements;
 				DEVELOPMENT_TEAM = 65CN9R59RJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SDK/GoogleMobileAdsSdkiOS-7.12.1",
+				);
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skirkiles.pop.MessagesExtension;
@@ -423,6 +435,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MessagesExtension/MessagesExtension.entitlements;
 				DEVELOPMENT_TEAM = 65CN9R59RJ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SDK/GoogleMobileAdsSdkiOS-7.12.1",
+				);
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skirkiles.pop.MessagesExtension;

@@ -9,7 +9,6 @@
 import UIKit
 import Messages
 
-
 let DrawViewControllerSegueID = "DrawVCSegueID"
 let DrawViewControllerStoryboardID = "DrawViewControllerID"
 
@@ -52,6 +51,8 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var progressViewTopConstraint: NSLayoutConstraint!
     
+    var drawVCTransitionDelegate:TransitionDelegate? = nil
+    
     //Properties
     var image:UIImage?
     
@@ -77,7 +78,9 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         self.verifyImage()
         
-    }
+    }        
+
+    
     
     func verifyImage(){
         if let image = self.image{
@@ -115,6 +118,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     //View controller lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
         
         self.colorPickerButton.tintColor = UIColor(cgColor: self.contentView.drawColor)
         self.progressView.isHidden = true
@@ -135,7 +139,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         self.updateButtonVisibility(presentationStyle: delegate.getPresentationStyle())
         
         self.contentView.zoomDelegate = self
-        
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -317,7 +321,9 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             fatalError("Tried to send image but class did not have a send image delegate")
         }
         
+        
         sendDelegate.sendImage(image: image)
+
     }
     
     @IBAction func savePressed(_ sender: AnyObject) {
@@ -362,6 +368,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         if segue.identifier == BrushSettingsSegueID{
             let controller = segue.destination as! BrushSettingsViewController
             controller.delegate = self
+            self.drawVCTransitionDelegate = controller
             controller.sliderInitialWidth = Float(self.contentView.drawWidth)
         }
     }
@@ -407,6 +414,11 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     //MARK: Transition Delegate
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
+        
+        if let delegate = self.drawVCTransitionDelegate{
+            delegate.didTransition(presentationStyle: presentationStyle)
+        }
+        
         if self.view.frame.width >= self.view.frame.height{
             updateButtonConstraints(presentationStyle: presentationStyle, portrait:false)
             
@@ -429,6 +441,13 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     
     func widthChagned(width: CGFloat) {
         self.contentView.changeWidth(width: width)
+    }
+    
+    func getPresenationStyle() -> MSMessagesAppPresentationStyle {
+        guard let delegate = self.presentationStyleDelegate else{
+            fatalError("Presenationstyledelegate was nil on DrawViewController")
+        }
+        return delegate.getPresentationStyle()
     }
     
 }
