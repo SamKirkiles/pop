@@ -54,6 +54,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         productIDs.append("com.skirkiles.pop.bluecolors")
         productIDs.append("com.skirkiles.pop.redcolors")
         productIDs.append("com.skirkiles.pop.greencolors")
+        productIDs.append("com.skirkiles.pop.graycolors")
         requestProductInfo()
         
         SKPaymentQueue.default().add(self)
@@ -63,27 +64,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
             fatalError("Delegate not assigned to Store tableview controller")
         }
 
-        if self.view.frame.size.height > self.view.frame.size.width {
-            //we are now in landscape
-            if delegate.getPresentationStyle() == .compact{
-                self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }else{
-                self.tableView.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-            }
-            
-        } else {
-            // we are now in portrait
-            if delegate.getPresentationStyle() == .compact{
-                self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }else{
-                self.tableView.contentInset = UIEdgeInsets(top: 66, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 66, left: 0, bottom: 50, right: 0)
-            }
-        }
-        
+        updateTableViewInsets(preferredSize: nil)
     }
     
     func requestProductInfo(){
@@ -145,6 +126,8 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Red Color Pack")
         case "com.skirkiles.pop.greencolors":
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Green Color Pack")
+        case "com.skirkiles.pop.graycolors":
+            cell.purchaseImageView.image = #imageLiteral(resourceName: "Gray Color Pack")
         default:
             print("No Image to display!")
         }
@@ -191,48 +174,12 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
         print(presentationStyle.rawValue)
-        if presentationStyle == .compact{
-            self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-        }else{
-            self.tableView.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-            self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-        }
+        self.updateTableViewInsets(preferredSize: nil)
     }
     
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        if self.view.frame.size.height > self.view.frame.size.width {
-            //we are now in landscape
-            guard let delegate = self.transactionDelegate else{
-                fatalError("Delegate not assigned to Store tableview controller")
-            }
-            
-            
-            if delegate.getPresentationStyle() == .compact{
-                self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }else{
-                self.tableView.contentInset = UIEdgeInsets(top: 66, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 66, left: 0, bottom: 50, right: 0)
-            }
-            
-        } else {
-            // we are now in portrait
-            guard let delegate = self.transactionDelegate else{
-                fatalError("Delegate not assigned to Store tableview controller")
-            }
-            
-            if delegate.getPresentationStyle() == .compact{
-                self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }else{
-                self.tableView.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-            }
-            
-        }
-        
+            self.updateTableViewInsets(preferredSize: size)
     }
     func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]){
         guard let delegate = self.transactionDelegate else{
@@ -249,5 +196,74 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         defaults.synchronize()
         
     }
+    
+    func updateTableViewInsets(preferredSize: CGSize?){
+        // set the height of the table view
+        
+        guard let delegate = self.transactionDelegate else {
+            fatalError("Transition delegate not assigned!")
+        }
+        
+        var portrait = true
+        
+        if let size = preferredSize{
+            if size.height > size.width{
+                portrait = true
+            }else{
+                portrait = false
+            }
+        }else if self.view.frame.size.height > self.view.frame.size.width{
+            portrait = true
+        }else{
+            portrait = false
+            
+        }
+        
+        UI_USER_INTERFACE_IDIOM()
+        
+        if portrait{
+            if delegate.getPresentationStyle() == .expanded{
+                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
+                    self.tableView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    
+                    if self.tableView?.contentOffset == CGPoint(x: 0, y: 0){
+                        print("Now we want to be able to see the banner")
+                        self.tableView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
+                    }
+                }else{
+                    self.tableView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    
+                    if self.tableView?.contentOffset == CGPoint(x: 0, y: 0){
+                        print("Now we want to be able to see the banner")
+                        self.tableView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
+                        
+                    }
+                }
+            }else{
+                self.tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+                self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            }
+        }else{
+            
+            if delegate.getPresentationStyle() == .expanded{
+                
+                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
+                    self.tableView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                }else{
+                    self.tableView?.contentInset = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
+                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
+                }
+            }else{
+                self.tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+                self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            }
+            
+        }
+        
+    }
+
     
 }

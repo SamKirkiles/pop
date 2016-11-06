@@ -114,7 +114,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
             self.savedLines.append(line)
             self.setNeedsDisplay()
             self.drawImageLayer?.clear()
-        }else{
+        }else{  
             fatalError("templine was nil!")
         }
     }
@@ -126,13 +126,6 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
     
     
     override func draw(_ rect: CGRect) {
-        
-        
-        guard let image = self.image else {
-            return
-        }
-        
-        image.draw(in: rect)
         
         self.layer.drawsAsynchronously = true
         

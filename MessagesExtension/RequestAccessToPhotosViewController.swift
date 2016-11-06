@@ -22,7 +22,7 @@ class RequestAccessToPhotosViewController: UIViewController, TransitionDelegate 
     @IBOutlet weak var stackViewTopConstraint: NSLayoutConstraint!
     
     var delegate:RequestAccessDelegate? = nil
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         

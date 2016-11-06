@@ -41,30 +41,101 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     
     override func viewDidAppear(_ animated: Bool) {
+        if PHPhotoLibrary.authorizationStatus() == .authorized{
+        }else{
+            print("not authorized")
+            self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
+        }
+
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        updateCollectionViewInsets(preferredSize: size)
+    }
+    
+    
+    
+    func updateCollectionViewInsets(preferredSize: CGSize?){
+        // set the height of the table view 
+        
+        guard let delegate = self.presentationStyleDelegate else {
+            fatalError("Transition delegate not assigned!")
+        }
+        
+        var portrait = true
+        
+        if let size = preferredSize{
+            if size.height > size.width{
+                portrait = true
+            }else{
+                portrait = false
+            }
+        }else if self.view.frame.size.height > self.view.frame.size.width{
+            portrait = true
+        }else{
+            portrait = false
+
+        }
+        
+        UI_USER_INTERFACE_IDIOM() 
+        
+        if portrait{
+            if delegate.getPresentationStyle() == .expanded{
+                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
+                    self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    
+                    print(self.collectionView?.contentOffset)
+
+                    if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
+                        print("Now we want to be able to see the banner")
+                        self.collectionView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
+                    }
+                }else{
+                    self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    
+                    print(self.collectionView?.contentOffset)
+                    if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
+                        print("Now we want to be able to see the banner")
+                        self.collectionView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
+                        
+                    }
+                }
+            }else{
+                self.collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+                self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            }
+        }else{
+            
+            if delegate.getPresentationStyle() == .expanded{
+                
+                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
+                    self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                }else{
+                    self.collectionView?.contentInset = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
+                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
+                }
+            }else{
+                self.collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+                self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            }
+
+        }
         
     }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.photosFetchAsset = self.fetchPhotos()
         
-        if PHPhotoLibrary.authorizationStatus() == .authorized{
-        }else{
-            self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
-        }
+        updateCollectionViewInsets(preferredSize: nil)
     }
-    
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -417,17 +488,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
         
-        if presentationStyle == .compact{
-            collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            
-        }else{
-            collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-            self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-            self.collectionView?.setContentOffset(CGPoint(x: self.collectionView!.contentOffset.x, y: self.collectionView!.contentOffset.y - 86), animated: true)
-            
-        }
-        
+        updateCollectionViewInsets(preferredSize: nil)
         
         if let delegate = self.transitionDelegate{
             delegate.didTransition(presentationStyle: presentationStyle)

@@ -141,6 +141,7 @@
 				84BB671D1D61523E00922420 /* MainInterface.storyboard */,
 				84BB672F1D61541300922420 /* MainMessagesViewController.swift */,
 				84BB67311D61549500922420 /* SelectPhotoCollectionViewController.swift */,
+				84F2C1011D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift */,
 				8484A00C1D9B24D400058701 /* BlankCanvasViewController.swift */,
 				84BB67351D6213B200922420 /* DrawViewController.swift */,
 				84BB67371D62273800922420 /* ContentView.swift */,
@@ -149,7 +150,6 @@
 				84E0F1691D64EA5600FC5863 /* CoverViewController.swift */,
 				84E0F1671D64DCEA00FC5863 /* CameraViewController.swift */,
 				84BB67331D62029700922420 /* PhotoCollectionViewCell.swift */,
-				84F2C1011D6CB9A900FF50B8 /* RequestAccessToPhotosViewController.swift */,
 				84E0F1651D641C9F00FC5863 /* BrushSettingsViewController.swift */,
 				84E118DE1DC26877008538AB /* StoreTableViewController.swift */,
 				84E118E01DC2B121008538AB /* StoreTableViewCell.swift */,
@@ -205,7 +205,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Sam Kirkiles";
 				TargetAttributes = {
 					84BB67081D61523E00922420 = {
@@ -330,6 +330,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -380,6 +381,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

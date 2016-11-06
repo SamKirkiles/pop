@@ -68,6 +68,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     @IBOutlet weak var editButton: UIButton!
     
     //Misc
+    @IBOutlet weak var contentImageView: UIImageView!
     
     var zooming = false
     
@@ -78,7 +79,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         self.verifyImage()
         
-    }        
+    }
 
     
     
@@ -90,6 +91,13 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                 self.contentView.image = image
                 self.contentView.isUserInteractionEnabled = true
                 self.contentView.setNeedsDisplay()
+                
+                
+                guard let myimage = self.image else{
+                    fatalError("Image was nil")
+                }
+                self.contentImageView.image = myimage
+
             }
             
             guard let delegate = self.presentationStyleDelegate else{
@@ -108,6 +116,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
                 self.updateConstraints()
                 
             }
+
         }else{
             self.loadingImageView.rotate()
             self.loadingImageView.isHidden = false
@@ -139,7 +148,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         self.updateButtonVisibility(presentationStyle: delegate.getPresentationStyle())
         
         self.contentView.zoomDelegate = self
-
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -302,16 +311,19 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         
         self.dismiss(animated: true, completion: {
-            sendDelegate.requestStyle(style: .compact)
+//            sendDelegate.requestStyle(style: .compact)
         })
     }
     
     @IBAction func sendPressed(_ sender: AnyObject) {
-        UIGraphicsBeginImageContextWithOptions(self.contentView.bounds.size, false, 3.0)
+        UIGraphicsBeginImageContextWithOptions(self.image!.size, false, 1.0)
         guard let context = UIGraphicsGetCurrentContext()else{
             fatalError("context was nil!")
         }
-        self.contentView.layer.render(in: context)
+        
+        self.contentImageView.image?.draw(in: CGRect(origin: CGPoint.zero, size: self.image!.size))
+        self.contentView.drawHierarchy(in: CGRect(origin: CGPoint.zero, size: self.image!.size)
+ , afterScreenUpdates: false)
         
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else{
             fatalError("Tried to create image from current graphics context but it returned nil!")
