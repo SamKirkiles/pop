@@ -15,6 +15,12 @@ protocol StoreTableViewDelegate {
     func getPresentationStyle() -> MSMessagesAppPresentationStyle
 }
 
+enum CellPurchaseState {
+    case buy
+    case purchased
+    case loading
+}
+
 class StoreTableViewController: UITableViewController, SKProductsRequestDelegate,SKPaymentTransactionObserver, TransitionDelegate {
     
     var productIDs:Array<String> = []
@@ -23,6 +29,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     var transactionInProgress = false
     
     var transactionDelegate:StoreTableViewDelegate? = nil
+    
     
     @IBAction func settingsButtonPressed(_ sender: AnyObject) {
         print("Now restore purchases")
@@ -59,11 +66,9 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         
         SKPaymentQueue.default().add(self)
         
+        print("Added to default queue")
+        
         //set the insets for the initila view
-        guard let delegate = self.transactionDelegate else{
-            fatalError("Delegate not assigned to Store tableview controller")
-        }
-
         updateTableViewInsets(preferredSize: nil)
     }
     
@@ -121,24 +126,27 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         
         switch productsArray[indexPath.row].productIdentifier {
         case "com.skirkiles.pop.bluecolors":
+            cell.productID = "com.skirkiles.pop.bluecolors"
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Blue Color Pack")
         case "com.skirkiles.pop.redcolors":
+            cell.productID = "com.skirkiles.pop.redcolors"
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Red Color Pack")
         case "com.skirkiles.pop.greencolors":
+            cell.productID = "com.skirkiles.pop.greencolors"
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Green Color Pack")
         case "com.skirkiles.pop.graycolors":
+            cell.productID = "com.skirkiles.pop.graycolors"
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Gray Color Pack")
         default:
             print("No Image to display!")
         }
         
         let defaults = UserDefaults.standard
+        //if the item has been bought before
         if defaults.bool(forKey: productsArray[indexPath.row].productIdentifier){
-            cell.purchaseButton.isHidden = true
-            cell.purchasedLabel.isHidden = false
+            cell.setState(state: .purchased)
         }else{
-            cell.purchaseButton.isHidden = false
-            cell.purchasedLabel.isHidden = true
+            cell.setState(state: .buy)
         }
         
         cell.purchaseButton.addTarget(self, action: #selector(StoreTableViewController.purchaseButtonPressed), for: .touchUpInside)
@@ -150,26 +158,66 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         let payment = SKPayment(product: productsArray[sender.tag])
         SKPaymentQueue.default().add(payment)
         self.transactionInProgress = true
+        
+        let cell = self.tableView.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! StoreTableViewCell
+        cell.setState(state: .loading)
+        
+    }
+    
+    func request(_ request: SKRequest, didFailWithError error: Error) {
+        print(error.localizedDescription)
     }
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions{
             switch transaction.transactionState {
             case SKPaymentTransactionState.purchased, .restored:
+                
                 print("Purchase or Restore successfully completed")
                 transactionInProgress = false
                 unlockContentForTransaction(transaction: transaction)
                 SKPaymentQueue.default().finishTransaction(transaction)
                 self.tableView.reloadData()
+                
             case SKPaymentTransactionState.failed:
+                
                 print("Transaction Failed!")
                 print(transaction.payment.productIdentifier)
-                SKPaymentQueue.default().finishTransaction(transaction)
                 transactionInProgress = false
-            default:
-                print(transaction.transactionState.rawValue)
+                if let cell:StoreTableViewCell = cellForProductID(productId: transaction.payment.productIdentifier){
+                    cell.setState(state: .buy)
+                }
+
+                
+            case SKPaymentTransactionState.purchasing:
+                
+                //purchasing set the correct cell to loading
+                print("Purchasing!")
+                
+                if let cell:StoreTableViewCell = cellForProductID(productId: transaction.payment.productIdentifier){
+                    cell.setState(state: .loading)
+                }
+                
+            case SKPaymentTransactionState.deferred:
+                
+                //deferred
+                print("Deferred")
             }
         }
+    }
+    
+    func cellForProductID(productId:String) -> StoreTableViewCell?{
+        var i = 0
+        for product in productsArray{
+            print(i)
+            if productId == product.productIdentifier{
+                let cell = self.tableView.cellForRow(at: IndexPath(row: i, section: 0)) as! StoreTableViewCell
+                print(cell.productID)
+                return cell
+            }
+            i += 1
+        }
+        return nil
     }
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
@@ -179,7 +227,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-            self.updateTableViewInsets(preferredSize: size)
+        self.updateTableViewInsets(preferredSize: size)
     }
     func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]){
         guard let delegate = self.transactionDelegate else{
@@ -264,6 +312,6 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         }
         
     }
-
+    
     
 }

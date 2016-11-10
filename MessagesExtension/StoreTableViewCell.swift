@@ -15,6 +15,8 @@ class StoreTableViewCell: UITableViewCell {
     @IBOutlet weak var purchaseImageView: UIImageView!
     
     @IBOutlet weak var purchasedLabel: UILabel!
+    var productID = ""
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,5 +28,21 @@ class StoreTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
+    func setState(state: CellPurchaseState){
+        switch state {
+        case .buy:
+            self.purchaseButton.isHidden = false
+            self.purchasedLabel.isHidden = true
+            self.activityIndicator.isHidden = true
+        case .loading:
+            self.purchaseButton.isHidden = true
+            self.purchasedLabel.isHidden = true
+            self.activityIndicator.isHidden = false
+        case .purchased:
+            self.purchaseButton.isHidden = true
+            self.purchasedLabel.isHidden = false
+            self.activityIndicator.isHidden = true
+        }
+    }
 }
