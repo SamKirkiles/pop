@@ -62,6 +62,8 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         productIDs.append("com.skirkiles.pop.redcolors")
         productIDs.append("com.skirkiles.pop.greencolors")
         productIDs.append("com.skirkiles.pop.graycolors")
+        productIDs.append("com.skirkiles.pop.purplecolors")
+        productIDs.append("com.skirkiles.pop.yellowcolors")
         requestProductInfo()
         
         SKPaymentQueue.default().add(self)
@@ -137,6 +139,12 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         case "com.skirkiles.pop.graycolors":
             cell.productID = "com.skirkiles.pop.graycolors"
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Gray Color Pack")
+        case "com.skirkiles.pop.purplecolors":
+            cell.productID = "com.skirkiles.pop.purplecolors"
+            cell.purchaseImageView.image = #imageLiteral(resourceName: "Purple Color Pack")
+        case "com.skirkiles.pop.yellowcolors":
+            cell.productID = "com.skirkiles.pop.purplecolors"
+            cell.purchaseImageView.image = #imageLiteral(resourceName: "Yellow Color Pack")
         default:
             print("No Image to display!")
         }
@@ -155,12 +163,14 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     }
     
     func purchaseButtonPressed(sender: UIButton){
+        let cell = self.tableView.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! StoreTableViewCell
+        cell.setState(state: .loading)
+
+        
         let payment = SKPayment(product: productsArray[sender.tag])
         SKPaymentQueue.default().add(payment)
         self.transactionInProgress = true
         
-        let cell = self.tableView.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! StoreTableViewCell
-        cell.setState(state: .loading)
         
     }
     

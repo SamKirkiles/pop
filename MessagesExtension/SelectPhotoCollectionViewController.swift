@@ -87,8 +87,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
                     self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
                     self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
                     
-                    print(self.collectionView?.contentOffset)
-
                     if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
                         print("Now we want to be able to see the banner")
                         self.collectionView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
@@ -97,7 +95,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
                     self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
                     self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
                     
-                    print(self.collectionView?.contentOffset)
                     if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
                         print("Now we want to be able to see the banner")
                         self.collectionView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)

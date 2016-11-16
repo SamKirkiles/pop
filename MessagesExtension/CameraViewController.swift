@@ -70,8 +70,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     
     func setupCamera(){
         captureSession = AVCaptureSession()
-        //create the input device for the capture session
         
+
         let deviceInput:AVCaptureDeviceInput
         do{
             deviceInput = try AVCaptureDeviceInput(device: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo))
@@ -79,12 +79,16 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         }catch {
             fatalError(error.localizedDescription)
         }
-                
-        captureSession?.addInput(deviceInput)
+        
+        if captureSession!.canAddInput(deviceInput){
+            captureSession?.addInput(deviceInput)
+        }
         
         stillImageOutput = AVCapturePhotoOutput()
         
         self.captureSession?.addOutput(stillImageOutput)
+        
+        
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait

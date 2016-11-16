@@ -347,15 +347,19 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
             
-            UIGraphicsBeginImageContextWithOptions(self.contentView.bounds.size, false, 3.0)
+            UIGraphicsBeginImageContextWithOptions(self.image!.size, false, 1.0)
             guard let context = UIGraphicsGetCurrentContext()else{
                 fatalError("context was nil!")
             }
-            self.contentView.layer.render(in: context)
+            
+            self.contentImageView.image?.draw(in: CGRect(origin: CGPoint.zero, size: self.image!.size))
+            self.contentView.drawHierarchy(in: CGRect(origin: CGPoint.zero, size: self.image!.size)
+                , afterScreenUpdates: false)
             
             guard let image = UIGraphicsGetImageFromCurrentImageContext() else{
                 fatalError("Tried to create image from current graphics context but it returned nil!")
             }
+            
             
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
             
