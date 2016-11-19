@@ -304,11 +304,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         sendDelegate.requestStyle(style: .expanded)
     }
     
-    @IBAction func closePressed(_ sender: AnyObject) {
-        guard let sendDelegate = self.sendImageDelegate else {
-            fatalError("Tried to send image but class did not have a send image delegate")
-        }
-        
+    @IBAction func closePressed(_ sender: AnyObject) {        
         
         self.dismiss(animated: true, completion: {
 //            sendDelegate.requestStyle(style: .compact)
@@ -316,13 +312,44 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     }
     
     @IBAction func sendPressed(_ sender: AnyObject) {
-        UIGraphicsBeginImageContextWithOptions(self.image!.size, false, 1.0)
-        guard let context = UIGraphicsGetCurrentContext()else{
-            fatalError("context was nil!")
+        
+        print("The image size is:",self.image!.size)
+        
+        let actualWidth = self.image!.size.width
+        let actualHeight = self.image!.size.height
+        let maxside:CGFloat = 1000
+        
+
+        var newSize = CGSize.zero
+        
+        if actualWidth >= maxside || actualHeight >= maxside{
+            // the image is too big on one side
+            var newWidth:CGFloat = 0.0
+            var newHeight:CGFloat = 0.0
+
+            if actualWidth >= actualHeight{
+                newWidth = maxside
+                newHeight = (maxside*actualHeight)/actualWidth
+            }else{
+                newHeight = maxside
+                newWidth = (maxside*actualWidth)/actualHeight
+
+            }
+            
+            newSize = CGSize(width: newWidth, height: newHeight)
+        }else{
+            newSize = self.image!.size
         }
         
-        self.contentImageView.image?.draw(in: CGRect(origin: CGPoint.zero, size: self.image!.size))
-        self.contentView.drawHierarchy(in: CGRect(origin: CGPoint.zero, size: self.image!.size)
+        print("The new size is:",newSize)
+
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+
+        self.contentImageView.image?.draw(in: CGRect(origin: CGPoint.zero, size: newSize))
+        
+        self.contentView.contentScaleFactor = 5.0
+        self.contentView.drawHierarchy(in: CGRect(origin: CGPoint.zero, size: newSize)
  , afterScreenUpdates: false)
         
         guard let image = UIGraphicsGetImageFromCurrentImageContext() else{
@@ -348,11 +375,9 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
         let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
             
             UIGraphicsBeginImageContextWithOptions(self.image!.size, false, 1.0)
-            guard let context = UIGraphicsGetCurrentContext()else{
-                fatalError("context was nil!")
-            }
             
             self.contentImageView.image?.draw(in: CGRect(origin: CGPoint.zero, size: self.image!.size))
+            self.contentView.contentScaleFactor = 5.0
             self.contentView.drawHierarchy(in: CGRect(origin: CGPoint.zero, size: self.image!.size)
                 , afterScreenUpdates: false)
             
