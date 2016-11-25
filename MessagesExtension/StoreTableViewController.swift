@@ -262,66 +262,21 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
             fatalError("Transition delegate not assigned!")
         }
         
-        var portrait = true
+        var size:CGSize
         
-        if let size = preferredSize{
-            if size.height > size.width{
-                portrait = true
-            }else{
-                portrait = false
-            }
-        }else if self.view.frame.size.height > self.view.frame.size.width{
-            portrait = true
+        if  preferredSize != nil{
+            size = preferredSize!
         }else{
-            portrait = false
-            
+            size = self.view.frame.size
         }
         
-        UI_USER_INTERFACE_IDIOM()
+        print("The size is: ",size)
         
-        if portrait{
-            if delegate.getPresentationStyle() == .expanded{
-                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
-                    self.tableView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    
-                    if self.tableView?.contentOffset == CGPoint(x: 0, y: 0){
-                        print("Now we want to be able to see the banner")
-                        self.tableView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
-                    }
-                }else{
-                    self.tableView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    
-                    if self.tableView?.contentOffset == CGPoint(x: 0, y: 0){
-                        print("Now we want to be able to see the banner")
-                        self.tableView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
-                        
-                    }
-                }
-            }else{
-                self.tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }
-        }else{
-            
-            if delegate.getPresentationStyle() == .expanded{
-                
-                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
-                    self.tableView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                }else{
-                    self.tableView?.contentInset = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
-                    self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
-                }
-            }else{
-                self.tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }
-            
-        }
+        self.tableView?.contentInset = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
+        self.tableView?.scrollIndicatorInsets = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
         
+        self.tableView?.setContentOffset(CGPoint(x: 0, y: -LayoutManager.getTopInsetAmount(size: size, style: delegate.getPresentationStyle())), animated: true)
+
+    
     }
-    
-    
 }

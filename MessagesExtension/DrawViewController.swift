@@ -144,7 +144,7 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
             updateButtonConstraints(presentationStyle: delegate.getPresentationStyle(), portrait:true)
             
         }
-        
+                
         self.updateButtonVisibility(presentationStyle: delegate.getPresentationStyle())
         
         self.contentView.zoomDelegate = self
@@ -256,24 +256,12 @@ class DrawViewController: UIViewController, UIScrollViewDelegate, TransitionDele
     
     func updateButtonConstraints(presentationStyle: MSMessagesAppPresentationStyle, portrait: Bool){
         DispatchQueue.main.async {
+//            self.scrollViewTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle)
+            self.progressViewTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle)
             
-            if presentationStyle == .compact{
-                self.closeButtonTopConstraint.constant = 0
-                self.sendButtonTopConstraint.constant = 0
-                self.scrollViewTopConstraint.constant = 0
-                self.progressViewTopConstraint.constant = 0
-            }else if portrait == false{
-                self.closeButtonTopConstraint.constant = 80
-                self.sendButtonTopConstraint.constant = 80
-                self.scrollViewTopConstraint.constant = 65
-                self.progressViewTopConstraint.constant = 65
-            }else{
-                self.closeButtonTopConstraint.constant = 80
-                self.sendButtonTopConstraint.constant = 80
-                self.scrollViewTopConstraint.constant =  86
-                self.progressViewTopConstraint.constant = 86
-
-            }
+            print("The constant is: ",LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle))
+            
+            
         }
     }
     

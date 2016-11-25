@@ -34,6 +34,9 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.white
+        
+        print("Size: ", self.view.frame.size)
+
     }
     
     override func didBecomeActive(with conversation: MSConversation) {

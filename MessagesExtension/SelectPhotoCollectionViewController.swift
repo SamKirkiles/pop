@@ -46,7 +46,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             print("not authorized")
             self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
         }
-
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -58,73 +58,37 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     
     func updateCollectionViewInsets(preferredSize: CGSize?){
-        // set the height of the table view 
+        // set the height of the table view
+        
         
         guard let delegate = self.presentationStyleDelegate else {
             fatalError("Transition delegate not assigned!")
         }
         
-        var portrait = true
         
-        if let size = preferredSize{
-            if size.height > size.width{
-                portrait = true
-            }else{
-                portrait = false
-            }
-        }else if self.view.frame.size.height > self.view.frame.size.width{
-            portrait = true
+        var size:CGSize
+        
+        if  preferredSize != nil{
+            size = preferredSize!
         }else{
-            portrait = false
-
+            size = self.view.frame.size
         }
         
-        UI_USER_INTERFACE_IDIOM() 
         
-        if portrait{
-            if delegate.getPresentationStyle() == .expanded{
-                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
-                    self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    
-                    if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
-                        print("Now we want to be able to see the banner")
-                        self.collectionView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
-                    }
-                }else{
-                    self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    
-                    if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
-                        print("Now we want to be able to see the banner")
-                        self.collectionView?.setContentOffset(CGPoint(x: 0, y: -86), animated: true)
-                        
-                    }
-                }
-            }else{
-                self.collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }
-        }else{
-            
-            if delegate.getPresentationStyle() == .expanded{
-                
-                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
-                    self.collectionView?.contentInset = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
-                }else{
-                    self.collectionView?.contentInset = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
-                    self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
-                }
-            }else{
-                self.collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-                self.collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
-            }
-
-        }
+        self.collectionView?.contentInset = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
+        self.collectionView?.scrollIndicatorInsets = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
+        
+//        print(self.collectionView?.contentOffset)
+//        print(LayoutManager.getTopInsetAmount(size: size)
+        
+//        if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
+//            self.collectionView?.setContentOffset(CGPoint(x: 0, y: -LayoutManager.getTopInsetAmount(size: size, style: delegate.getPresentationStyle())), animated: true)
+//            
+//        }
+        
         
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -432,7 +396,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         
         let remainder = (((self.collectionView?.frame.size.width)! - 20 - (10
             * CGFloat(cellNumber))) - CGFloat(cellCombinedSize))
-                
+        
         return CGSize(width: cellSize + (remainder / CGFloat(cellNumber)), height: cellSize + (remainder / CGFloat(cellNumber)))
     }
     
