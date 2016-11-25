@@ -18,6 +18,7 @@ protocol CameraDelegate{
 
 class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, TransitionDelegate, RequestAccessDelegate {
     
+    //This is the first commit on the camera branch did it work?
     
     var transitionDelegate: TransitionDelegate? = nil
     
