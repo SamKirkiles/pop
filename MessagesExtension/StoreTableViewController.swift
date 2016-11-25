@@ -269,9 +269,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         }else{
             size = self.view.frame.size
         }
-        
-        print("The size is: ",size)
-        
+                
         self.tableView?.contentInset = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
         self.tableView?.scrollIndicatorInsets = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
         

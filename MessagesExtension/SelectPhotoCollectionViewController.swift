@@ -52,12 +52,12 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        updateCollectionViewInsets(preferredSize: size)
+        updateCollectionViewInsets(preferredSize: size,transitioning: false)
     }
     
     
     
-    func updateCollectionViewInsets(preferredSize: CGSize?){
+    func updateCollectionViewInsets(preferredSize: CGSize?,transitioning: Bool){
         // set the height of the table view
         
         
@@ -75,17 +75,13 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         }
         
         
+        
         self.collectionView?.contentInset = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
         self.collectionView?.scrollIndicatorInsets = LayoutManager.getEdgeInsets(size: size, style: delegate.getPresentationStyle())
         
-//        print(self.collectionView?.contentOffset)
-//        print(LayoutManager.getTopInsetAmount(size: size)
-        
-//        if self.collectionView?.contentOffset == CGPoint(x: 0, y: 0){
-//            self.collectionView?.setContentOffset(CGPoint(x: 0, y: -LayoutManager.getTopInsetAmount(size: size, style: delegate.getPresentationStyle())), animated: true)
-//            
-//        }
-        
+        if self.collectionView?.contentOffset == CGPoint(x:0,y:0) || transitioning{
+            self.collectionView?.contentOffset = CGPoint(x: 0, y: -LayoutManager.getTopInsetAmount(size: size, style: delegate.getPresentationStyle()))
+        }
         
     }
     
@@ -95,7 +91,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
         
         self.photosFetchAsset = self.fetchPhotos()
         
-        updateCollectionViewInsets(preferredSize: nil)
+        updateCollectionViewInsets(preferredSize: nil,transitioning: false)
     }
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -449,7 +445,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
         
-        updateCollectionViewInsets(preferredSize: nil)
+        updateCollectionViewInsets(preferredSize: nil,transitioning: true)
         
         if let delegate = self.transitionDelegate{
             delegate.didTransition(presentationStyle: presentationStyle)
