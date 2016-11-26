@@ -22,6 +22,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     
     var transitionDelegate: TransitionDelegate? = nil
     
+    @IBOutlet var tapGesture: UITapGestureRecognizer!
     
     // AVFoundation Properties
     var captureSession: AVCaptureSession?
@@ -67,12 +68,14 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == .authorized{
             self.setupCamera()
         }
+        
+        self.view.addGestureRecognizer(tapGesture)
     }
     
     func setupCamera(){
         captureSession = AVCaptureSession()
         
-
+        
         let deviceInput:AVCaptureDeviceInput
         do{
             deviceInput = try AVCaptureDeviceInput(device: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo))
@@ -185,7 +188,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         let alertController = UIAlertController(title: "Save to camera roll?", message: nil, preferredStyle: UIAlertControllerStyle.alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {(action) in
-
+            
         })
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
@@ -249,7 +252,76 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         return true
     }
     
+    func switchCamera(){
+        
+        guard let session = captureSession else {
+            fatalError("session returned nil!")
+        }
+        session.beginConfiguration()
+        
+        let input = session.inputs[0] as! AVCaptureDeviceInput
+        
+        var newDevice:AVCaptureDevice?
+        
+        if input.device.position == .back{
+            //get front camera
+            
+            
+            newDevice = self.defaultDeviceTypeForPosition(position: .front)
+            //            newDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        }else{
+            //get back camera
+            newDevice = self.defaultDeviceTypeForPosition(position: .back)
+        }
+        
+        guard let device = newDevice else{
+            fatalError("Device was set to nil!")
+        }
+        
+        var newInput:AVCaptureInput?
+        
+        do{
+            try newInput = AVCaptureDeviceInput(device: device)
+            
+        }catch{
+            fatalError("There was an error switching cameras:")
+        }
+        session.removeInput(input)
+        
+        if session.canAddInput(newInput){
+            session.addInput(newInput)
+        }else{
+            print("Could not add input!")
+        }
+        session.commitConfiguration()
+        
+        
+    }
+    
+    @IBAction func doubleTapRecognized(_ sender: Any) {
+        print("Double Tap")
+        self.switchCamera()
+    }
+    
+    
+    func defaultDeviceTypeForPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
+        if let device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInDuoCamera,
+                                                      mediaType: AVMediaTypeVideo,
+                                                      position: position) {
+            return device
+        } else if let device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera,
+                                                             mediaType: AVMediaTypeVideo,
+                                                             position: position) {
+            return device
+        } else if let device = AVCaptureDevice.defaultDevice(withDeviceType: AVCaptureDeviceType.builtInTelephotoCamera, mediaType: AVMediaTypeVideo, position: position){
+            return device
+        }else{
+            return nil
+        }
+        
+    }
 }
+
 
 extension UIImage{
     func fixOrientation() -> UIImage {

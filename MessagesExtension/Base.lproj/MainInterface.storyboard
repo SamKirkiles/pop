@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11761" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -86,9 +86,11 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="N1J-gV-eo3">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <gestureRecognizers/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kG8-Rb-RmL">
                                 <rect key="frame" x="152" y="533" width="75" height="75"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="75" id="L7s-gw-jAD"/>
                                     <constraint firstAttribute="width" constant="75" id="eEF-vh-42D"/>
@@ -155,11 +157,17 @@
                         <outlet property="saveButton" destination="NBe-gJ-4U7" id="deo-9H-ZhP"/>
                         <outlet property="snapPhotoButton" destination="kG8-Rb-RmL" id="k9g-vo-YQw"/>
                         <outlet property="stillImageView" destination="N1J-gV-eo3" id="pLC-VF-d9I"/>
+                        <outlet property="tapGesture" destination="TkJ-pC-5Ps" id="vxT-KT-CQO"/>
                         <segue destination="gcH-At-RUg" kind="show" identifier="coverSegue" id="vnB-HF-9qb"/>
                         <segue destination="HI2-kD-KLi" kind="show" identifier="RequestAccessID" animates="NO" id="03R-19-hgd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZbQ-KM-Vgk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="TkJ-pC-5Ps">
+                    <connections>
+                        <action selector="doubleTapRecognized:" destination="YU3-Gr-LIM" id="DID-pw-BNd"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="209" y="-611"/>
         </scene>
