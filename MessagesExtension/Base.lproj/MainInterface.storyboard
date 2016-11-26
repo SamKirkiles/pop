@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11761" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
-<<<<<<< HEAD
-    <device id="retina4_7" orientation="portrait">
-=======
     <device id="retina5_5" orientation="portrait">
->>>>>>> camera-update
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
