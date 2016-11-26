@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11761" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ObA-dk-sSI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -154,6 +154,7 @@
                         <outlet property="choosePhotoButton" destination="E3H-sQ-vyw" id="fln-L5-bRR"/>
                         <outlet property="closeButton" destination="Sn6-vV-m0X" id="y7v-Ed-F8u"/>
                         <outlet property="closeButtonTopConstraint" destination="urP-sb-cWe" id="lUi-po-zNC"/>
+                        <outlet property="pinchGesture" destination="2Xo-uS-ULW" id="afb-DF-wyb"/>
                         <outlet property="saveButton" destination="NBe-gJ-4U7" id="deo-9H-ZhP"/>
                         <outlet property="snapPhotoButton" destination="kG8-Rb-RmL" id="k9g-vo-YQw"/>
                         <outlet property="stillImageView" destination="N1J-gV-eo3" id="pLC-VF-d9I"/>
@@ -168,6 +169,11 @@
                         <action selector="doubleTapRecognized:" destination="YU3-Gr-LIM" id="DID-pw-BNd"/>
                     </connections>
                 </tapGestureRecognizer>
+                <pinchGestureRecognizer id="2Xo-uS-ULW">
+                    <connections>
+                        <action selector="pinchRecognized:" destination="YU3-Gr-LIM" id="3q5-Jl-Ds7"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="209" y="-611"/>
         </scene>

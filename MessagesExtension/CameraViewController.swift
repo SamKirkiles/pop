@@ -23,6 +23,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     var transitionDelegate: TransitionDelegate? = nil
     
     @IBOutlet var tapGesture: UITapGestureRecognizer!
+    @IBOutlet var pinchGesture: UIPinchGestureRecognizer!
     
     // AVFoundation Properties
     var captureSession: AVCaptureSession?
@@ -43,6 +44,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     var outputImage:UIImage?
     
     var authoirzationPresented = false
+    
+    var zoomAmount:CGFloat = 1
     
     override func viewDidAppear(_ animated: Bool) {
         if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) != .authorized{
@@ -70,6 +73,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         }
         
         self.view.addGestureRecognizer(tapGesture)
+        self.view.addGestureRecognizer(pinchGesture)
     }
     
     func setupCamera(){
@@ -159,6 +163,13 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             videoConnection.videoOrientation = AVCaptureVideoOrientation.portrait
             
             let settings = AVCapturePhotoSettings()
+            
+            let captureInput = self.captureSession?.inputs[0] as! AVCaptureDeviceInput
+            
+            if captureInput.device.hasFlash{
+                print("Has Flash")
+                settings.flashMode = .on
+            }
             
             stillImageOutput?.capturePhoto(with: settings, delegate: self)
         }
@@ -303,6 +314,21 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         self.switchCamera()
     }
     
+    @IBAction func pinchRecognized(_ sender: Any) {
+        
+        let captureInput = self.captureSession?.inputs[0] as! AVCaptureDeviceInput
+        do {
+            try captureInput.device.lockForConfiguration()
+        }catch{
+            print("Error locking captureinput for configuration: ",error.localizedDescription)
+        }
+        
+        zoomAmount = captureInput.device.videoZoomFactor + atan2(pinchGesture.velocity, 5.0)
+        captureInput.device.videoZoomFactor = max(1.0, min(zoomAmount, 8.0))
+        print(captureInput.device.videoZoomFactor)
+        captureInput.device.unlockForConfiguration()
+        
+    }
     
     func defaultDeviceTypeForPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
         if let device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInDuoCamera,
@@ -313,7 +339,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
                                                              mediaType: AVMediaTypeVideo,
                                                              position: position) {
             return device
-        } else if let device = AVCaptureDevice.defaultDevice(withDeviceType: AVCaptureDeviceType.builtInTelephotoCamera, mediaType: AVMediaTypeVideo, position: position){
+        } else if let device = AVCaptureDevice.defaultDevice(withDeviceType: AVCaptureDeviceType.builtInTelephotoCamera,
+                                                             mediaType: AVMediaTypeVideo,
+                                                             position: position){
             return device
         }else{
             return nil
