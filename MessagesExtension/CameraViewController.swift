@@ -55,12 +55,15 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     
     var flashOn = false
     
+    var firstTime:Bool = true
+    
     override func viewDidAppear(_ animated: Bool) {
         if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) != .authorized{
             if authoirzationPresented == false{
                 self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
                 authoirzationPresented = true
             }
+            
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: {(granted) in
                 if granted == true{
                     self.setupCamera()
@@ -68,6 +71,20 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             })
             
         }
+        
+        if self.view.frame.size.height < self.view.frame.size.width && firstTime{
+            //we are now in landscape
+            print("perform segue ")
+            self.performSegue(withIdentifier: CoverVCSegue, sender: self)
+            firstTime = false
+        }else{
+            firstTime = false
+        }
+        
+
+        
+        //width is bigger than height which means landscape
+
     }
     
     override func viewDidLoad() {
@@ -98,6 +115,10 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         
         self.view.addGestureRecognizer(tapGesture)
         self.view.addGestureRecognizer(pinchGesture)
+
+        
+        
+
     }
     
     func setupCamera(){
@@ -187,6 +208,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     @IBAction func snapPhotoPressed(_ sender: AnyObject) {
         
         if let videoConnection = stillImageOutput!.connection(withMediaType: AVMediaTypeVideo){
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+            
+            print(UIDevice.current.orientation.isPortrait)
             videoConnection.videoOrientation = AVCaptureVideoOrientation.portrait
             
             let settings = AVCapturePhotoSettings()
@@ -276,9 +300,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        if self.view.frame.size.height > self.view.frame.size.width {
+        self.previewLayer?.frame.size = size
+        
+        if self.view.frame.size.height > self.view.frame.size.width && self.presentedViewController == nil{
             //we are now in landscape
             self.performSegue(withIdentifier: CoverVCSegue, sender: self)
+            
         } else {    // in landscape
             // we are now in portrait
         }
@@ -360,13 +387,17 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     }
     
     @IBAction func flashPressed(_ sender: Any) {
-        if flashOn{
+        
+        let captureInput = self.captureSession?.inputs[0] as! AVCaptureDeviceInput
+        
+        if captureInput.device.hasFlash && flashOn == false{
             //turn flash off
-            self.flashButton.setImage(#imageLiteral(resourceName: "Flash Off"), for: .normal)
-            self.flashOn = false
-        }else{
             self.flashButton.setImage(#imageLiteral(resourceName: "Flash On") , for: .normal)
             self.flashOn = true
+
+        }else{
+            self.flashButton.setImage(#imageLiteral(resourceName: "Flash Off"), for: .normal)
+            self.flashOn = false
 
         }
     }
