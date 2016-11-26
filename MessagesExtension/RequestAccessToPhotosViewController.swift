@@ -30,12 +30,7 @@ class RequestAccessToPhotosViewController: UIViewController, TransitionDelegate 
     }
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
-        if presentationStyle == .expanded{
-            stackViewTopConstraint.constant = 80
-        }else{            
-            stackViewTopConstraint.constant = -10
-                
-        }
+        stackViewTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle)
     }
     
         

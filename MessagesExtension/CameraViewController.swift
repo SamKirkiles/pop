@@ -77,7 +77,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             deviceInput = try AVCaptureDeviceInput(device: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo))
             
         }catch {
-            fatalError(error.localizedDescription)
+            print(error.localizedDescription)
+            self.snapPhotoButton.isEnabled = false
+            return
         }
         
         if captureSession!.canAddInput(deviceInput){
