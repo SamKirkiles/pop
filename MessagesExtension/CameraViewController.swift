@@ -14,13 +14,18 @@ let CameraVCStoryboardID = "CameraVC"
 
 protocol CameraDelegate{
     func didChooseImage(image:UIImage)
+    
+    func getPresentationStyle() -> MSMessagesAppPresentationStyle
 }
 
 class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, TransitionDelegate, RequestAccessDelegate {
     
+    //This is the first commit on the camera branch did it work?
     
     var transitionDelegate: TransitionDelegate? = nil
     
+    @IBOutlet var tapGesture: UITapGestureRecognizer!
+    @IBOutlet var pinchGesture: UIPinchGestureRecognizer!
     
     // AVFoundation Properties
     var captureSession: AVCaptureSession?
@@ -32,6 +37,10 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var closeButtonTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var flashTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var flashButton: UIButton!
+    @IBOutlet weak var switchButton: UIButton!
+    @IBOutlet weak var switchButtonTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var snapPhotoButton: UIButton!
     @IBOutlet weak var choosePhotoButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
@@ -42,12 +51,19 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     
     var authoirzationPresented = false
     
+    var zoomAmount:CGFloat = 1
+    
+    var flashOn = false
+    
+    var firstTime:Bool = true
+    
     override func viewDidAppear(_ animated: Bool) {
         if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) != .authorized{
             if authoirzationPresented == false{
                 self.performSegue(withIdentifier: RequestAccessSegueID, sender: self)
                 authoirzationPresented = true
             }
+            
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: {(granted) in
                 if granted == true{
                     self.setupCamera()
@@ -55,6 +71,20 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             })
             
         }
+        
+        if self.view.frame.size.height < self.view.frame.size.width && firstTime{
+            //we are now in landscape
+            print("perform segue ")
+            self.performSegue(withIdentifier: CoverVCSegue, sender: self)
+            firstTime = false
+        }else{
+            firstTime = false
+        }
+        
+
+        
+        //width is bigger than height which means landscape
+
     }
     
     override func viewDidLoad() {
@@ -62,16 +92,39 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         self.closeButton.isHidden = true
         self.snapPhotoButton.isHidden = false
         self.saveButton.isHidden = true
-        
+        self.flashButton.isHidden = false
+        self.flashOn = false
+        self.switchButton.isHidden = false
+        self.flashButton.setImage(#imageLiteral(resourceName: "Flash Off"), for: .normal)
+        self.flashButton.imageView?.contentMode = .scaleAspectFit
+        self.switchButton.imageView?.contentMode = .scaleAspectFit
         if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) == .authorized{
             self.setupCamera()
         }
+        
+        guard let delegate = self.delegate else{
+            fatalError("Could not access camera delegate")
+        }
+        
+        
+        self.closeButtonTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: delegate.getPresentationStyle())
+        self.flashTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: delegate.getPresentationStyle())
+        self.switchButtonTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: delegate.getPresentationStyle())
+
+
+        
+        self.view.addGestureRecognizer(tapGesture)
+        self.view.addGestureRecognizer(pinchGesture)
+
+        
+        
+
     }
     
     func setupCamera(){
         captureSession = AVCaptureSession()
         
-
+        
         let deviceInput:AVCaptureDeviceInput
         do{
             deviceInput = try AVCaptureDeviceInput(device: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo))
@@ -140,6 +193,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             stillImageView.isHidden = false
             choosePhotoButton.isHidden = false
             saveButton.isHidden = false
+            snapPhotoButton.isHidden = true
+            flashButton.isHidden = true
+            switchButton.isHidden = true
             
             
             
@@ -154,9 +210,19 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     @IBAction func snapPhotoPressed(_ sender: AnyObject) {
         
         if let videoConnection = stillImageOutput!.connection(withMediaType: AVMediaTypeVideo){
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+            
+            print(UIDevice.current.orientation.isPortrait)
             videoConnection.videoOrientation = AVCaptureVideoOrientation.portrait
             
             let settings = AVCapturePhotoSettings()
+            
+            let captureInput = self.captureSession?.inputs[0] as! AVCaptureDeviceInput
+            
+            if captureInput.device.hasFlash && flashOn{
+                print("Has Flash")
+                settings.flashMode = .on
+            }
             
             stillImageOutput?.capturePhoto(with: settings, delegate: self)
         }
@@ -180,13 +246,15 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         snapPhotoButton.isHidden = false
         choosePhotoButton.isHidden = true
         saveButton.isHidden = true
+        switchButton.isHidden = false
+        flashButton.isHidden = false
     }
     
     @IBAction func saveButtonPressed(_ sender: AnyObject) {
         let alertController = UIAlertController(title: "Save to camera roll?", message: nil, preferredStyle: UIAlertControllerStyle.alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {(action) in
-
+            
         })
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
@@ -212,12 +280,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
             delegate.didTransition(presentationStyle: presentationStyle)
         }else{
         }
-        
-        if presentationStyle == .expanded{
-            closeButtonTopConstraint.constant = 80
-            
-        }else{
-            closeButtonTopConstraint.constant = 0
+        closeButtonTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle)
+
+        flashTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle)
+        switchButtonTopConstraint.constant = LayoutManager.getTopInsetAmount(size: self.view.frame.size, style: presentationStyle)
+
+       if presentationStyle == .compact{
             if self.presentedViewController == nil{
                 self.dismiss(animated: true, completion: {
                     
@@ -234,9 +302,12 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        if self.view.frame.size.height > self.view.frame.size.width {
+        self.previewLayer?.frame.size = size
+        
+        if self.view.frame.size.height > self.view.frame.size.width && self.presentedViewController == nil{
             //we are now in landscape
             self.performSegue(withIdentifier: CoverVCSegue, sender: self)
+            
         } else {    // in landscape
             // we are now in portrait
         }
@@ -250,7 +321,110 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate, Tra
         return true
     }
     
+    @IBAction func switchButtonPressed(_ sender: Any) {
+        self.switchCamera()
+    }
+    
+    func switchCamera(){
+        
+        guard let session = captureSession else {
+            fatalError("session returned nil!")
+        }
+        session.beginConfiguration()
+        
+        let input = session.inputs[0] as! AVCaptureDeviceInput
+        
+        var newDevice:AVCaptureDevice?
+        
+        if input.device.position == .back{
+            newDevice = self.defaultDeviceTypeForPosition(position: .front)
+        }else{
+            newDevice = self.defaultDeviceTypeForPosition(position: .back)
+        }
+        
+        guard let device = newDevice else{
+            fatalError("Device was set to nil!")
+        }
+        
+        var newInput:AVCaptureInput?
+        
+        do{
+            try newInput = AVCaptureDeviceInput(device: device)
+            
+        }catch{
+            fatalError("There was an error switching cameras:")
+        }
+        session.removeInput(input)
+        
+        if session.canAddInput(newInput){
+            session.addInput(newInput)
+        }else{
+            print("Could not add input!")
+        }
+        session.commitConfiguration()
+        
+        
+    }
+    
+    
+    @IBAction func doubleTapRecognized(_ sender: Any) {
+        print("Double Tap")
+        self.switchCamera()
+    }
+    
+    @IBAction func pinchRecognized(_ sender: Any) {
+        
+        let captureInput = self.captureSession?.inputs[0] as! AVCaptureDeviceInput
+        do {
+            try captureInput.device.lockForConfiguration()
+        }catch{
+            print("Error locking captureinput for configuration: ",error.localizedDescription)
+        }
+        
+        zoomAmount = captureInput.device.videoZoomFactor + atan2(pinchGesture.velocity, 5.0)
+        captureInput.device.videoZoomFactor = max(1.0, min(zoomAmount, 8.0))
+        print(captureInput.device.videoZoomFactor)
+        captureInput.device.unlockForConfiguration()
+        
+    }
+    
+    @IBAction func flashPressed(_ sender: Any) {
+        
+        let captureInput = self.captureSession?.inputs[0] as! AVCaptureDeviceInput
+        
+        if captureInput.device.hasFlash && flashOn == false{
+            //turn flash off
+            self.flashButton.setImage(#imageLiteral(resourceName: "Flash On") , for: .normal)
+            self.flashOn = true
+
+        }else{
+            self.flashButton.setImage(#imageLiteral(resourceName: "Flash Off"), for: .normal)
+            self.flashOn = false
+
+        }
+    }
+    
+    
+    func defaultDeviceTypeForPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
+        if let device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInDuoCamera,
+                                                      mediaType: AVMediaTypeVideo,
+                                                      position: position) {
+            return device
+        } else if let device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera,
+                                                             mediaType: AVMediaTypeVideo,
+                                                             position: position) {
+            return device
+        } else if let device = AVCaptureDevice.defaultDevice(withDeviceType: AVCaptureDeviceType.builtInTelephotoCamera,
+                                                             mediaType: AVMediaTypeVideo,
+                                                             position: position){
+            return device
+        }else{
+            return nil
+        }
+        
+    }
 }
+
 
 extension UIImage{
     func fixOrientation() -> UIImage {

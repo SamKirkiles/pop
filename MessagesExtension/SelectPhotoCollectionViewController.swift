@@ -56,7 +56,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     }
     
     
-    
     func updateCollectionViewInsets(preferredSize: CGSize?,transitioning: Bool){
         // set the height of the table view
         
