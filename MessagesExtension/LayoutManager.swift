@@ -12,8 +12,17 @@ import Messages
 
 class LayoutManager{
     
-    static let iosModels:[String] = ["iPod Touch 5","iPod Touch 6","iPhone 5","iPhone 5c","iPhone 5s","iPhone SE","Simulator"]
-
+    static let iphoneSmallModels:[String] = ["iPod Touch 5","iPod Touch 6","iPhone 5","iPhone 5c","iPhone 5s","iPhone SE","Simulator"]
+    static let iphoneLargeModels:[String] = ["iPhone 6", "iPhone 6s Plus","iPhone 6s","iPhone 6 Plus","iPhone 7","iPhone 7 Plus"]
+    
+    
+    static let iphoneSmallLandscapeHeaderSize:CGFloat = 41
+    static let iOSRegularLandscapeHeaderSize:CGFloat = 67
+    static let iphoneLargeLandscapeHeaderSize:CGFloat = 59
+    
+    static let iphoneSmallPortraitHeaderSize:CGFloat = 64
+    static let iOSRegularPortraitHeaderSize:CGFloat = 86
+    static let iphoneLargePortraitHeaderSize:CGFloat = 87
     
     static func getTopInsetAmount(size:CGSize, style:MSMessagesAppPresentationStyle) -> CGFloat{
         if size.height > size.width{
@@ -24,13 +33,15 @@ class LayoutManager{
                 }else{
                     if #available(iOS 10.2, *){
                         
-                        if self.iosModels.contains(UIDevice.current.modelName){
-                            return 64
+                        if self.iphoneSmallModels.contains(UIDevice.current.modelName){
+                            return iphoneSmallPortraitHeaderSize
+                        }else if self.iphoneLargeModels.contains(UIDevice.current.modelName){
+                            return iphoneLargePortraitHeaderSize
                         }else{
-                            return 86
+                            return iOSRegularPortraitHeaderSize
                         }
                     }else{
-                        return 86
+                        return iOSRegularPortraitHeaderSize
                     }
                  }
             }else{
@@ -41,16 +52,18 @@ class LayoutManager{
             if style == .expanded{
                 if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
                     //expanded portrait ipad
-                    return 86
+                    return iOSRegularPortraitHeaderSize
                 }else{
                     if #available(iOS 10.2, *){
-                        if self.iosModels.contains(UIDevice.current.modelName){
-                            return 41
+                        if self.iphoneSmallModels.contains(UIDevice.current.modelName){
+                            return iphoneSmallLandscapeHeaderSize
+                        }else if self.iphoneLargeModels.contains(UIDevice.current.modelName){
+                            return iphoneLargeLandscapeHeaderSize
                         }else{
-                            return 67
+                            return iOSRegularLandscapeHeaderSize
                         }
                     }else{
-                        return 67
+                        return iOSRegularLandscapeHeaderSize
                     }
                 }
             }else{
@@ -69,13 +82,15 @@ class LayoutManager{
                     return UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
                 }else{
                     if #available(iOS 10.2, *){
-                        if self.iosModels.contains(UIDevice.current.modelName){
-                            return UIEdgeInsets(top: 64, left: 0, bottom: 50, right: 0)
+                        if self.iphoneSmallModels.contains(UIDevice.current.modelName){
+                            return UIEdgeInsets(top: iphoneSmallPortraitHeaderSize, left: 0, bottom: 50, right: 0)
+                        }else if self.iphoneLargeModels.contains(UIDevice.current.modelName){
+                            return UIEdgeInsets(top: iphoneLargePortraitHeaderSize, left: 0, bottom: 50, right: 0)
                         }else{
-                            return UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                            return UIEdgeInsets(top: iOSRegularPortraitHeaderSize, left: 0, bottom: 50, right: 0)
                         }
                     }else{
-                        return UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                        return UIEdgeInsets(top: iOSRegularPortraitHeaderSize, left: 0, bottom: 50, right: 0)
                     }
                 }
             }else{
@@ -86,16 +101,18 @@ class LayoutManager{
             if style == .expanded{
                 if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
                     //expanded portrait ipad
-                    return UIEdgeInsets(top: 86, left: 0, bottom: 50, right: 0)
+                    return UIEdgeInsets(top: iOSRegularPortraitHeaderSize, left: 0, bottom: 50, right: 0)
                 }else{
                     if #available(iOS 10.2, *){
-                        if self.iosModels.contains(UIDevice.current.modelName){
-                            return UIEdgeInsets(top: 41, left: 0, bottom: 50, right: 0)
+                        if self.iphoneSmallModels.contains(UIDevice.current.modelName){
+                            return UIEdgeInsets(top: iphoneSmallLandscapeHeaderSize, left: 0, bottom: 50, right: 0)
+                        }else if self.iphoneLargeModels.contains(UIDevice.current.modelName){
+                            return UIEdgeInsets(top: iphoneLargeLandscapeHeaderSize, left: 0, bottom: 50, right: 0)
                         }else{
-                            return UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
+                            return UIEdgeInsets(top: iOSRegularLandscapeHeaderSize, left: 0, bottom: 50, right: 0)
                         }
                     }else{
-                        return UIEdgeInsets(top: 67, left: 0, bottom: 50, right: 0)
+                        return UIEdgeInsets(top: iOSRegularLandscapeHeaderSize, left: 0, bottom: 50, right: 0)
                     }
                 }
             }else{
