@@ -11,3 +11,12 @@ POP is an iOS Messages app which lets you quickly draw on your photos inside you
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/Screenshot3.png" width="200">
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/Screenshot4.png" width="200">
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/Screenshot5.png" width="200">
+
+###Features
+
+* 30 unique colors and brush size adjustment
+* Cloudkit backend
+* Fully-featured built in camera for quick photos
+* Draw on blank canvas
+* Zoom and pan
+* iPhone and iPad support on iOS 10+
