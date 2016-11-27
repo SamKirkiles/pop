@@ -1,5 +1,7 @@
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/LogoBannerLarge.png" width="350">
 #POP - draw on your photos in iMessage
+
+current version: 1.2.4
 ___
 
 <a href="https://itunes.apple.com/us/app/pop-draw-on-your-photos-for/id1147420399?ls=1&mt=8">
