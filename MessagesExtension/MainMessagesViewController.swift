@@ -36,6 +36,10 @@ class MainMessagesViewController: MSMessagesAppViewController,SelectPhotoDelegat
         self.view.backgroundColor = UIColor.white
         
         print("Size: ", self.view.frame.size)
+        
+        if SKPaymentQueue.canMakePayments(){
+            IAPManager.sharedInstance.setupInAppPurchases()
+        }
 
     }
     
