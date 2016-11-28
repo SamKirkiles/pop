@@ -11,7 +11,6 @@ import StoreKit
 import Messages
 
 protocol StoreTableViewDelegate {
-    func didUpdateTransactions()
     func getPresentationStyle() -> MSMessagesAppPresentationStyle
 }
 
@@ -21,10 +20,8 @@ enum CellPurchaseState {
     case loading
 }
 
-class StoreTableViewController: UITableViewController, SKProductsRequestDelegate,SKPaymentTransactionObserver, TransitionDelegate {
+class StoreTableViewController: UITableViewController, TransitionDelegate {
     
-    var productIDs:Array<String> = []
-    var productsArray: Array<SKProduct> = []
     
     var transactionInProgress = false
     
@@ -58,45 +55,17 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        productIDs.append("com.skirkiles.pop.bluecolors")
-        productIDs.append("com.skirkiles.pop.redcolors")
-        productIDs.append("com.skirkiles.pop.greencolors")
-        productIDs.append("com.skirkiles.pop.graycolors")
-        productIDs.append("com.skirkiles.pop.purplecolors")
-        productIDs.append("com.skirkiles.pop.yellowcolors")
-        requestProductInfo()
-        
-        SKPaymentQueue.default().add(self)
-        
-        print("Added to default queue")
-        
-        //set the insets for the initila view
         updateTableViewInsets(preferredSize: nil)
-    }
-    
-    func requestProductInfo(){
-        if SKPaymentQueue.canMakePayments(){
-            let productRequest = SKProductsRequest(productIdentifiers: Set(productIDs))
-            productRequest.delegate = self
-            productRequest.start()
-        }else{
-            print("Cannot make payments!")
-        }
-    }
-    
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        if response.products.count != 0{
-            for product in response.products{
-                self.productsArray.append(product)
-            }
-            self.tableView.reloadData()
-        }else{
-            print("There are no products")
-        }
         
-        if response.invalidProductIdentifiers.count >= 0{
-            print(response.invalidProductIdentifiers.description)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(StoreTableViewController.IAPManagerDidUpdate), name: IAPManagerDidUpdateNotification, object: nil)
+    }
+    
+    func IAPManagerDidUpdate(){
+        self.tableView.reloadData()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func didReceiveMemoryWarning() {
@@ -113,7 +82,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return productsArray.count
+        return IAPManager.sharedInstance.products.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -124,9 +93,9 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         cell.purchaseButton.layer.cornerRadius = 5.0
         cell.purchaseButton.tag = indexPath.row
         
-        cell.purchaseTitleLabel.text = productsArray[indexPath.row].localizedTitle
+        cell.purchaseTitleLabel.text = IAPManager.sharedInstance.products[indexPath.row].localizedTitle
         
-        switch productsArray[indexPath.row].productIdentifier {
+        switch IAPManager.sharedInstance.products[indexPath.row].productIdentifier {
         case "com.skirkiles.pop.bluecolors":
             cell.productID = "com.skirkiles.pop.bluecolors"
             cell.purchaseImageView.image = #imageLiteral(resourceName: "Blue Color Pack")
@@ -151,7 +120,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         
         let defaults = UserDefaults.standard
         //if the item has been bought before
-        if defaults.bool(forKey: productsArray[indexPath.row].productIdentifier){
+        if defaults.bool(forKey: IAPManager.sharedInstance.products[indexPath.row].productIdentifier){
             cell.setState(state: .purchased)
         }else{
             cell.setState(state: .buy)
@@ -167,8 +136,7 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         cell.setState(state: .loading)
 
         
-        let payment = SKPayment(product: productsArray[sender.tag])
-        SKPaymentQueue.default().add(payment)
+        IAPManager.sharedInstance.createPaymentRequestForProduct(product: IAPManager.sharedInstance.products[sender.tag])
         self.transactionInProgress = true
         
         
@@ -178,47 +146,10 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
         print(error.localizedDescription)
     }
     
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        for transaction in transactions{
-            switch transaction.transactionState {
-            case SKPaymentTransactionState.purchased, .restored:
-                
-                print("Purchase or Restore successfully completed")
-                transactionInProgress = false
-                unlockContentForTransaction(transaction: transaction)
-                SKPaymentQueue.default().finishTransaction(transaction)
-                self.tableView.reloadData()
-                
-            case SKPaymentTransactionState.failed:
-                
-                print("Transaction Failed!")
-                print(transaction.payment.productIdentifier)
-                transactionInProgress = false
-                if let cell:StoreTableViewCell = cellForProductID(productId: transaction.payment.productIdentifier){
-                    cell.setState(state: .buy)
-                }
-
-                
-            case SKPaymentTransactionState.purchasing:
-                
-                //purchasing set the correct cell to loading
-                print("Purchasing!")
-                
-                if let cell:StoreTableViewCell = cellForProductID(productId: transaction.payment.productIdentifier){
-                    cell.setState(state: .loading)
-                }
-                
-            case SKPaymentTransactionState.deferred:
-                
-                //deferred
-                print("Deferred")
-            }
-        }
-    }
     
     func cellForProductID(productId:String) -> StoreTableViewCell?{
         var i = 0
-        for product in productsArray{
+        for product in IAPManager.sharedInstance.products{
             print(i)
             if productId == product.productIdentifier{
                 let cell = self.tableView.cellForRow(at: IndexPath(row: i, section: 0)) as! StoreTableViewCell
@@ -238,21 +169,6 @@ class StoreTableViewController: UITableViewController, SKProductsRequestDelegate
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         self.updateTableViewInsets(preferredSize: size)
-    }
-    func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]){
-        guard let delegate = self.transactionDelegate else{
-            fatalError("Delegate not assigned")
-        }
-        delegate.didUpdateTransactions()
-        
-        SKPaymentQueue.default().remove(self)
-    }
-    
-    func unlockContentForTransaction(transaction:SKPaymentTransaction){
-        let defaults = UserDefaults.standard
-        defaults.set(true, forKey: transaction.payment.productIdentifier)
-        defaults.synchronize()
-        
     }
     
     func updateTableViewInsets(preferredSize: CGSize?){

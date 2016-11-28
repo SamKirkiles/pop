@@ -99,12 +99,16 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
         self.helperViewMoreColorsContainer.alpha = 0
         self.helperViewMoreColors.layer.cornerRadius = 3
         
-    }
+        NotificationCenter.default.addObserver(self, selector: #selector(BrushSettingsViewController.IAPManagerDidUpdate), name: IAPManagerDidUpdateNotification, object: nil)
 
+    }
     
+    func IAPManagerDidUpdate(){
+        self.unlockPurchases()
+    }
     
-    func didBecomeForeground(){
-        
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func didReceiveMemoryWarning() {
@@ -173,7 +177,6 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        
         if (indexPath.row > 0){
             guard let delegate = self.delegate else{
                 fatalError("delegate was nil for BrushSettingsViewController")
@@ -189,10 +192,6 @@ class BrushSettingsViewController: UIViewController, UIGestureRecognizerDelegate
         }
     }
     
-    func didUpdateTransactions() {
-        unlockPurchases()
-        self.collectionView.reloadData()
-    }
     
     func didTransition(presentationStyle: MSMessagesAppPresentationStyle) {
         if let delegate = brushSettingsTransitionDelegate{
