@@ -284,7 +284,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     func conversationSaveError(error: Error) {
         DispatchQueue.main.async {
             print(error)
-            let controller = UIAlertController(title: "iCloud error", message: error.localizedDescription, preferredStyle: .alert)
+            let controller = UIAlertController(title: "Uh oh! Couldn't Send", message: "Make sure you're connected to wifi and iCloud Drive enabled in Settings > iCloud > iCloud Drive > iCloud Drive ON", preferredStyle: .alert)
             let button = UIAlertAction(title: "Ok", style: .default, handler: { (action) in
                 
             })
@@ -317,7 +317,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
     func conversationImageError() {
         DispatchQueue.main.async {
             
-            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo from the iCloud servers... Make sure you are logged into iCloud and wifi is on", preferredStyle: .alert)
+            let controller = UIAlertController(title: "Oops!", message: "We couldn't load your POP photo from the iCloud servers... Make sure iCloud Drive is enabled and wifi is on", preferredStyle: .alert)
             let okButton = UIAlertAction(title: "Ok", style: .default) { (action) in
                 self.presentedViewController?.dismiss(animated: true, completion: nil)
                 self.delegate!.requestStyle(presentationStyle: .compact)
