@@ -11,10 +11,14 @@ import UIKit
 
 struct Segment{
     var start:CGPoint
+    var second: CGPoint
+    var third: CGPoint
     var end:CGPoint
     
-    init(start _start: CGPoint, end _end:CGPoint) {
+     init(start _start: CGPoint, second _second: CGPoint, third _third: CGPoint, end _end:CGPoint) {
         start = _start
+        second = _second
+        third = _third
         end = _end
     }
 }
@@ -30,15 +34,14 @@ class Line {
         width = _width
         rect = _rect
     }
-}
-
-extension Line{
-    func addSegment(start:CGPoint, end: CGPoint){
-        let newSegment = Segment(start: start, end: end)
+    
+    func addSegment(_start:CGPoint, _second:CGPoint, _third:CGPoint, _end: CGPoint){
+        let newSegment = Segment(start: _start, second: _second, third: _third, end: _end)
         self.segments.append(newSegment)
     }
     
     func clearPath(){
         segments.removeAll()
     }
+
 }

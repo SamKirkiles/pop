@@ -38,8 +38,11 @@ class DrawingLayer: CALayer, ContentViewDelegate {
             for segment in line.segments{
                 
                 ctx.move(to: CGPoint(x: segment.start.x, y: segment.start.y))
-                ctx.addLine(to: CGPoint(x: segment.end.x, y: segment.end.y))
-
+                
+                ctx.addCurve(to: segment.end, control1: segment.second, control2: segment.third)
+                
+                print("The segment we are drawing is : ", segment)
+                
             }
             ctx.strokePath()
         }else{
