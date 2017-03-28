@@ -35,14 +35,32 @@ class DrawingLayer: CALayer, ContentViewDelegate {
             self.contentsScale = 2
 
             //draw our line
+            var count = 0;
             for segment in line.segments{
                 
-                ctx.move(to: CGPoint(x: segment.start.x, y: segment.start.y))
+                var startPoint = segment.start
+                let secondPoint = segment.second
+                let thirdPoint = segment.third
+                var endPoint = segment.end
                 
-                ctx.addCurve(to: segment.end, control1: segment.second, control2: segment.third)
+                if count > 0{
+                    let previousThirdPoint = CGPoint(x: (line.segments[count - 1].third.x * self.frame.width)/line.rect.width, y: (line.segments[count - 1].third.y * self.frame.height)/line.rect.height)
+                    //set the startpoint to the midpoint between the two points
+                    startPoint = CGPoint(x: (secondPoint.x + previousThirdPoint.x)/2, y: (secondPoint.y + previousThirdPoint.y)/2)
+                }
                 
-                print("The segment we are drawing is : ", segment)
                 
+                if count + 1 < line.segments.count{
+                    let nextSecondPoint = CGPoint(x: (line.segments[count + 1].second.x * self.frame.width)/line.rect.width, y: (line.segments[count + 1].second.y * self.frame.height)/line.rect.height)
+                    endPoint = CGPoint(x: (thirdPoint.x+nextSecondPoint.x)/2, y: (thirdPoint.y+nextSecondPoint.y)/2)
+                    
+                }
+
+                
+                ctx.move(to: startPoint)
+                ctx.addCurve(to: endPoint, control1: secondPoint, control2: thirdPoint)
+                
+                count += 1;
             }
             ctx.strokePath()
         }else{

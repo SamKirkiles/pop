@@ -192,18 +192,37 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
                 
 
                 //get startpoint and endpoint of the lines we want to use and make sure the points are in the correct coordinate space
-                let startPoint = CGPoint(x: (segment.start.x * self.frame.width)/line.rect.width, y: (segment.start.y * self.frame.height)/line.rect.height)
+                var startPoint = CGPoint(x: (segment.start.x * self.frame.width)/line.rect.width, y: (segment.start.y * self.frame.height)/line.rect.height)
                 let secondPoint = CGPoint(x: (segment.second.x * self.frame.width)/line.rect.width , y: (segment.second.y * self.frame.height)/line.rect.height)
                 let thirdPoint = CGPoint(x: (segment.third.x * self.frame.width)/line.rect.width , y: (segment.third.y * self.frame.height)/line.rect.height)
-                let endPoint = CGPoint(x:(segment.end.x * self.frame.width)/line.rect.width, y: (segment.end.y * self.frame.height)/line.rect.height)
+                var endPoint = CGPoint(x:(segment.end.x * self.frame.width)/line.rect.width, y: (segment.end.y * self.frame.height)/line.rect.height)
+                
+                if count > 0{
+                    let previousThirdPoint = CGPoint(x: (line.segments[count - 1].third.x * self.frame.width)/line.rect.width, y: (line.segments[count - 1].third.y * self.frame.height)/line.rect.height)
+                    //set the startpoint to the midpoint between the two points
+                    startPoint = CGPoint(x: (secondPoint.x + previousThirdPoint.x)/2, y: (secondPoint.y + previousThirdPoint.y)/2)
+                    print("start point", startPoint);
+                }
+                
+                
+                if count + 1 < line.segments.count{
+                    let nextSecondPoint = CGPoint(x: (line.segments[count + 1].second.x * self.frame.width)/line.rect.width, y: (line.segments[count + 1].second.y * self.frame.height)/line.rect.height)
+                    endPoint = CGPoint(x: (thirdPoint.x+nextSecondPoint.x)/2, y: (thirdPoint.y+nextSecondPoint.y)/2)
+                    print("end point", endPoint)
+    
+                }
+                
+                
+
                 
                 count += 1;
                 
                 context.move(to: startPoint)
                 context.addCurve(to: endPoint, control1: secondPoint, control2: thirdPoint)
             }
+            context.strokePath()
+
         }
-        context.strokePath()
     }
     
     func generateRandomColor() -> UIColor {
@@ -214,88 +233,6 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1)
     }
 
-    
-    
-//    override func draw(_ rect: CGRect) {
-//        
-//        self.layer.drawsAsynchronously = true
-//        
-//        guard let context = UIGraphicsGetCurrentContext() else{
-//            fatalError("context returned nil!")
-//        }
-//        
-//        //Loop through all the lines in the saved lines array
-//        for line in self.savedLines{
-//            //Set the line settings
-//            context.setLineWidth(line.width * ((self.frame.width+self.frame.height)/(line.rect.width+line.rect.height)))
-//            context.setLineCap(.round)
-//            context.setStrokeColor(line.drawColor)
-//            self.contentScaleFactor = 2
-//            var count = 0
-//            var previous = count - 1
-//
-//            //Go through each segment in the line segments
-//            for segment in line.segments{
-//                
-//                var startx = (segment.start.x * self.frame.width)/line.rect.width
-//                var starty = (segment.start.y * self.frame.height)/line.rect.height
-//                
-//                var startpoint = CGPoint(x: startx, y: starty)
-//                
-//                let endx = (segment.end.x * self.frame.width)/line.rect.width
-//                let endy = (segment.end.y * self.frame.height)/line.rect.height
-//                
-//                var endpoint = CGPoint(x:endx, y: endy)
-//                
-//                //the end of this curve and the beginning of the next have to be the same
-//                
-//                count += 1
-//                previous =  count - 1
-//                
-//                if count < line.segments.count{
-//                    
-//                    let nextSegment = line.segments[count]
-//                    
-//                    let nextstartx = (nextSegment.start.x * self.frame.width)/line.rect.width
-//                    let nextstarty = (nextSegment.start.y * self.frame.height)/line.rect.height
-//                    
-//                    
-//                    var nextendx = (nextSegment.end.x * self.frame.width)/line.rect.width
-//                    var nextendy = (nextSegment.end.y * self.frame.height)/line.rect.height
-//                    
-//                    if previous >= 0{
-//                        let previousSegment = line.segments[previous]
-//                        
-//                        let previousstartx = (previousSegment.start.x * self.frame.width)/line.rect.width
-//                        let previousstarty = (previousSegment.start.y * self.frame.height)/line.rect.height
-//                        
-//                        
-//                        //this is going to be the midpoint between the two tanjents
-//                        
-//                        startx = (previousstartx+endx)/2.0
-//                        starty = (previousstarty+endy)/2.0
-//                        
-//                    }
-//                    
-//                    if count + 1 < line.segments.count{
-//                        let nextlinebegin = line.segments[count + 1]
-//                        
-//                        
-//                        let nextlinebeginendx = (nextlinebegin.start.x * self.frame.width)/line.rect.width
-//                        let nextlinebeginendy = (nextlinebegin.start.y * self.frame.height)/line.rect.height
-//                        nextendx = (nextstartx + nextlinebeginendx)/2
-//                        nextendy = (nextstarty + nextlinebeginendy)/2
-//
-//                    }
-//                    context.move(to: CGPoint(x: startx, y: starty))
-//
-//                    context.addCurve(to: CGPoint(x:nextendx, y:nextendy), control1: CGPoint(x: endx, y: endy), control2: CGPoint(x: nextstartx, y: nextstarty))
-//
-//                }
-//            }
-//            context.strokePath()
-//        }
-//    }
     
     
     
