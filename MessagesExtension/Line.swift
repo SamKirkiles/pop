@@ -28,7 +28,8 @@ class Line {
     var drawColor:CGColor
     var width:CGFloat
     var rect:CGRect
-    
+    var tempPoints:[CGPoint]?
+
     init(drawColor _drawColor:CGColor, width _width:CGFloat, rect _rect:CGRect) {
         drawColor = _drawColor
         width = _width

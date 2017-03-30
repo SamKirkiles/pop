@@ -15,6 +15,7 @@ protocol ZoomDelegate{
 
 protocol ContentViewDelegate {
     func drawLine(line: Line)
+    func drawTempPoints(points: [CGPoint], drawColor: CGColor, drawWidth: CGFloat, rect:CGRect)
 }
 
 class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizerDelegate {
@@ -23,7 +24,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
     
     var drawImageLayer:DrawingLayer?
     var tempLine:Line?
-    
+    var tempPoints:[CGPoint]?
     
     
     var savedLines:[Line] = []
@@ -41,8 +42,8 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
     var second:CGPoint?
     var third:CGPoint?
     var fourth:CGPoint?
-
-
+    
+    
     
     //Drawing Variables
     var drawColor:CGColor = #colorLiteral(red: 0.2202886641, green: 0.7022308707, blue: 0.9593387842, alpha: 1).cgColor
@@ -80,7 +81,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
     //MARK: Touch methods
     
     func addTouches(touches:Set<UITouch>, event: UIEvent){
-
+        
         guard let touch = touches.first else{
             fatalError("event or touch returned nil")
         }
@@ -91,46 +92,55 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         
         
         
-            for touch in touches{
-                if self.globalCounter == 3{
-                    self.globalCounter = 0;
-                    self.tempLine?.addSegment(_start: lastPoint!, _second: second!, _third: third!, _end: touch.location(in: self))
-                    lastPoint! = touch.location(in: self)
-                    
-                    print("Templline: ", tempLine!.segments.count)
-
-                }else{
-                    switch self.globalCounter {
-                    case 0:
-                        break;
-                    case 1:
-                        second = touch.location(in: self)
-
-                        break;
-                    case 2:
-                        third = touch.location(in: self)
-
-                        break;
-                    case 3:
-
-                        break;
-                    default:
-                        fatalError("There was a major error with touches")
-                        break;
-                    }
-                    self.globalCounter += 1;
-                    print(self.globalCounter)
+        for touch in touches{
+            if self.globalCounter == 3{
+                self.globalCounter = 0;
+                self.tempLine?.addSegment(_start: lastPoint!, _second: second!, _third: third!, _end: touch.location(in: self))
+                lastPoint! = touch.location(in: self)
+                self.tempPoints = []
+                
+            }else{
+                if tempPoints == nil{
+                    tempPoints = []
                 }
                 
+                switch self.globalCounter {
+                case 0:
+                    self.tempPoints?.append(touch.location(in:self))
+                    break;
+                case 1:
+                    second = touch.location(in: self)
+                    self.tempPoints?.append(touch.location(in: self))
+                    break;
+                case 2:
+                    third = touch.location(in: self)
+                    self.tempPoints?.append(touch.location(in: self))
+                    break;
+                case 3:
+                    self.tempPoints?.append(touch.location(in: self))
+                    break;
+                default:
+                    fatalError("There was a major error with touches")
+                    break;
+                }
+                
+                self.globalCounter += 1;
             }
+            
+        }
+        
+//        if self.tempPoints!.count == 5{
+//            self.tempPoints = []
+//        }
+        self.drawingDelegate?.drawTempPoints(points: tempPoints!, drawColor: tempLine!.drawColor, drawWidth: tempLine!.width, rect: tempLine!.rect)
         
         self.drawingDelegate?.drawLine(line: tempLine!)
-
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.tempPoints = []
         
-
         guard let touchEvent = event else{
             fatalError("Event was nil on Touches began in ContentView")
         }
@@ -139,12 +149,13 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
             fatalError("Could not access first touch")
         }
         
+        
         self.tempLine = Line(drawColor: drawColor, width: drawWidth, rect: self.frame)
         lastPoint = touch.location(in: self)
         self.globalCounter = 0;
-
+        
         addTouches(touches: touches, event: touchEvent)
-
+        
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -154,21 +165,32 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         }
         addTouches(touches: touches, event: touchEvent)
         
-
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let line = self.tempLine{
+            
+            if let tpoints = self.tempPoints{
+                line.tempPoints = tpoints;
+            }
+            
+            
             self.savedLines.append(line)
             self.setNeedsDisplay()
             self.drawImageLayer?.clear()
-        }else{  
+            
+            self.tempPoints = []
+            
+        }else{
             fatalError("templine was nil!")
         }
+        
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.drawImageLayer?.clear()
+        self.tempPoints = []
     }
     
     
@@ -179,18 +201,18 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         guard let context = UIGraphicsGetCurrentContext() else{
             fatalError("Context returned nil on Content View")
         }
-
+        
         for line in self.savedLines{
             context.setLineWidth(line.width * ((self.frame.width+self.frame.height)/(line.rect.width+line.rect.height)))
             context.setLineCap(.round)
             context.setStrokeColor(line.drawColor)
             self.contentScaleFactor = 2
-
-            var count = 0;
             
+            var count = 0;
+                        
             for segment in line.segments{
                 
-
+                
                 //get startpoint and endpoint of the lines we want to use and make sure the points are in the correct coordinate space
                 var startPoint = CGPoint(x: (segment.start.x * self.frame.width)/line.rect.width, y: (segment.start.y * self.frame.height)/line.rect.height)
                 let secondPoint = CGPoint(x: (segment.second.x * self.frame.width)/line.rect.width , y: (segment.second.y * self.frame.height)/line.rect.height)
@@ -201,27 +223,45 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
                     let previousThirdPoint = CGPoint(x: (line.segments[count - 1].third.x * self.frame.width)/line.rect.width, y: (line.segments[count - 1].third.y * self.frame.height)/line.rect.height)
                     //set the startpoint to the midpoint between the two points
                     startPoint = CGPoint(x: (secondPoint.x + previousThirdPoint.x)/2, y: (secondPoint.y + previousThirdPoint.y)/2)
-                    print("start point", startPoint);
                 }
                 
                 
                 if count + 1 < line.segments.count{
                     let nextSecondPoint = CGPoint(x: (line.segments[count + 1].second.x * self.frame.width)/line.rect.width, y: (line.segments[count + 1].second.y * self.frame.height)/line.rect.height)
                     endPoint = CGPoint(x: (thirdPoint.x+nextSecondPoint.x)/2, y: (thirdPoint.y+nextSecondPoint.y)/2)
-                    print("end point", endPoint)
-    
                 }
-                
-                
-
-                
-                count += 1;
                 
                 context.move(to: startPoint)
                 context.addCurve(to: endPoint, control1: secondPoint, control2: thirdPoint)
-            }
-            context.strokePath()
+                context.move(to: endPoint)
 
+                
+                if let tpoints = line.tempPoints, count == line.segments.count - 1{
+                    var convertedPoints:[CGPoint] = []
+                    for point in tpoints{
+                        
+                        let newPoint = CGPoint(x: (point.x * self.frame.width)/line.rect.width, y: (point.y * self.frame.height)/line.rect.height)
+                        convertedPoints.append(newPoint)
+                    }
+                    
+                    if convertedPoints.count == 3{
+                        context.addCurve(to: convertedPoints[2], control1: convertedPoints[0], control2: convertedPoints[1])
+                    }else if convertedPoints.count == 2{
+                        context.addQuadCurve(to: convertedPoints[1], control: convertedPoints[0])
+                    }else if convertedPoints.count == 1{
+                        context.addLine(to: convertedPoints[0])
+                    }
+                }
+                
+                count += 1;
+                
+                
+                
+            }
+            
+            
+            context.strokePath()
+            
         }
     }
     
@@ -232,7 +272,7 @@ class ContentView: UIView, DrawViewControllerScrollDelegate, UIGestureRecognizer
         
         return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1)
     }
-
+    
     
     
     
