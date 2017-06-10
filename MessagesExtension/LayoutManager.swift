@@ -25,13 +25,19 @@ class LayoutManager{
     static let iphoneLargePortraitHeaderSize:CGFloat = 87
     
     static func getTopInsetAmount(size:CGSize, style:MSMessagesAppPresentationStyle) -> CGFloat{
+        
+        if #available(iOS 11, *){
+            print("available")
+            return 0
+        }
+        
         if size.height > size.width{
             if style == .expanded{
                 if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
                     //expanded portrait ipad
                     return 86
                 }else{
-                    if #available(iOS 10.2, *){
+                 if #available(iOS 10.2, *){
                         
                         if self.iphoneSmallModels.contains(UIDevice.current.modelName){
                             return iphoneSmallPortraitHeaderSize
@@ -74,7 +80,12 @@ class LayoutManager{
     }
 
     static func getEdgeInsets(size:CGSize, style:MSMessagesAppPresentationStyle) -> UIEdgeInsets{
-    
+        
+        if #available(iOS 11, *){
+            print("available")
+            return UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+        }
+        
         if size.height > size.width{
             if style == .expanded{
                 if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad{
