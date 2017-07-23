@@ -210,7 +210,6 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             delegate.requestStyle(presentationStyle: MSMessagesAppPresentationStyle.expanded)
             
             let photoCell = cell as! PhotoCollectionViewCell
-            x 
             let drawController = storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
             drawController.sendImageDelegate = self
             self.transitionDelegate = drawController
