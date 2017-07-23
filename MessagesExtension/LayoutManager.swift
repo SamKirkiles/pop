@@ -38,7 +38,7 @@ class LayoutManager{
                     return 86
                 }else{
                  if #available(iOS 10.2, *){
-                        
+                        print("available 10.3")
                         if self.iphoneSmallModels.contains(UIDevice.current.modelName){
                             return iphoneSmallPortraitHeaderSize
                         }else if self.iphoneLargeModels.contains(UIDevice.current.modelName){
@@ -83,7 +83,7 @@ class LayoutManager{
         
         if #available(iOS 11, *){
             print("available")
-            return UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+            return UIEdgeInsets(top: 0    , left: 0, bottom: 50, right: 0)
         }
         
         if size.height > size.width{

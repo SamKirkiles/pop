@@ -210,7 +210,7 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             delegate.requestStyle(presentationStyle: MSMessagesAppPresentationStyle.expanded)
             
             let photoCell = cell as! PhotoCollectionViewCell
-            
+            x 
             let drawController = storyboard?.instantiateViewController(withIdentifier: DrawViewControllerStoryboardID) as! DrawViewController
             drawController.sendImageDelegate = self
             self.transitionDelegate = drawController
@@ -218,12 +218,26 @@ class SelectPhotoCollectionViewController: UICollectionViewController, UICollect
             
             photoCell.asset?.requestFullImage(imageResults: { (newImage, info) in
                 guard let image = newImage else{
-                    fatalError("newImage was nil")
-                }
+                    
+                    let alert = UIAlertController(title: "Couldn't load photo", message: "There was a problem loading the photo from the camera roll.", preferredStyle: UIAlertControllerStyle.alert)
+                    let confirm = UIAlertAction(title: "ok", style: UIAlertActionStyle.default, handler: { (action) in
+                        alert.dismiss(animated: true, completion: nil);
+                    })
+                    alert.addAction(confirm)
+                    self.present(alert, animated: true, completion: {
+                        print("Couldn't load images presenting error");
+                    })
+                    return;
+                };
+                
+
+                
                 drawController.image = image
                 drawController.verifyImage()
             })
             
+            
+
             
             self.present(drawController, animated: true, completion: {
                 //present completed
