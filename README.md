@@ -12,7 +12,7 @@ ___
 
 ### About
 
-POP is an iOS Messages app which lets you quickly draw on your photos inside your iMessage conversations. It is currently the best drawing app available for iMessage with over 10k downloads and many unique features.
+POP is an iOS Messages app which lets you quickly draw on your photos inside your iMessage conversations. It is currently the best drawing app available for iMessage with over 50k downloads and many unique features.
 
 ## App Store Feature Promo    
 <img src="https://i.imgur.com/aSzyDgl.jpg">
