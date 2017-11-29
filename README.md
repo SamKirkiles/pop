@@ -5,7 +5,7 @@
 current version: 1.2.4
 ___
 
-*NOTICE* - POP is currently not being maintained and has been removed from the App store. Thanks to everyone who used and supported the app. 
+*NOTICE* - POP is currently not being maintained and has been removed from the App store. Thanks to everyone who used and supported the app.
 
 <a href="https://itunes.apple.com/us/app/pop-draw-on-your-photos-for/id1147420399?ls=1&mt=8">
 <img border="0" alt="W3Schools" src="http://i.imgur.com/qNYiZuk.png" width="200"></a>
@@ -14,7 +14,12 @@ ___
 
 POP is an iOS Messages app which lets you quickly draw on your photos inside your iMessage conversations. It is currently the best drawing app available for iMessage with over 50k downloads and many unique features.
 
+<img src="https://i.imgur.com/gJisVjq.png" >
+
 ## App Store Feature Promo    
+
+https://samkirkiles.svbtle.com/getting-featured-by-apple
+
 <img src="https://i.imgur.com/aSzyDgl.jpg">
 
 ### Screnshots 
