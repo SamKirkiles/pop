@@ -18,7 +18,6 @@ POP is an iOS Messages app which lets you quickly draw on your photos inside you
 
 ## App Store Feature Promo    
 
-https://samkirkiles.svbtle.com/getting-featured-by-apple
 
 <img src="https://i.imgur.com/aSzyDgl.jpg">
 
