@@ -21,7 +21,7 @@ POP is an iOS Messages app which lets you quickly draw on your photos inside you
 
 <img src="https://i.imgur.com/aSzyDgl.jpg">
 
-### Screnshots 
+### Screenshots 
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/Screenshot1.png" width="200">
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/Screenshot2.png" width="200">
 <img src="https://github.com/SamKirkiles/pop/blob/master/Screenshots/Screenshot3.png" width="200">
